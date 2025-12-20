@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
-import '../../../shared/utils/date_time_utils.dart';
+import '../../../shared/utils/localized_date_labels.dart';
 import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
 import '../models/game_session.dart';
@@ -49,7 +50,9 @@ class _EditDaySheetState extends State<EditDaySheet> {
 
   @override
   Widget build(BuildContext context) {
-    final earnings = (_hours * widget.hourlyWage) + (_rooms * widget.perRoomBonus);
+    final l10n = AppLocalizations.of(context)!;
+    final earnings =
+        (_hours * widget.hourlyWage) + (_rooms * widget.perRoomBonus);
     final sessionsCount = _sessions.length;
     final roomsMismatch = sessionsCount > 0 && _rooms != sessionsCount;
 
@@ -69,24 +72,24 @@ class _EditDaySheetState extends State<EditDaySheet> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    '${monthTitle(widget.day)} ${widget.day.day}',
+                    dayTitleShortL10n(context, widget.day),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
                 Text(
                   money(earnings),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
               ],
             ),
             const SizedBox(height: 14),
             StepperRow(
-              title: 'Hours worked',
-              subtitle: 'hours survived (respectfully)',
+              title: l10n.hoursWorkedTitle,
+              subtitle: l10n.hoursWorkedSubtitle,
               valueText: _hours.toStringAsFixed(1),
               onMinus: () {
                 HapticFeedback.selectionClick();
@@ -99,9 +102,10 @@ class _EditDaySheetState extends State<EditDaySheet> {
             ),
             const SizedBox(height: 10),
             StepperRow(
-              title: 'Rooms hosted',
-              subtitle:
-                  sessionsCount > 0 ? 'sessions saved: $sessionsCount' : 'rooms ran today',
+              title: l10n.roomsHostedTitle,
+              subtitle: sessionsCount > 0
+                  ? l10n.roomsHostedSubtitleWithSessions(sessionsCount)
+                  : l10n.roomsHostedSubtitleNone,
               valueText: '$_rooms',
               onMinus: () {
                 HapticFeedback.selectionClick();
@@ -123,21 +127,29 @@ class _EditDaySheetState extends State<EditDaySheet> {
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     Navigator.of(context).pop(
-                      const DayEntry(hours: 0, rooms: 0, sessions: <GameSession>[]),
+                      const DayEntry(
+                        hours: 0,
+                        rooms: 0,
+                        sessions: <GameSession>[],
+                      ),
                     );
                   },
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text('Clear'),
+                  label: Text(l10n.clear),
                 ),
                 const Spacer(),
                 FilledButton(
                   onPressed: () {
                     HapticFeedback.mediumImpact();
                     Navigator.of(context).pop(
-                      DayEntry(hours: _hours, rooms: _rooms, sessions: _sessions),
+                      DayEntry(
+                        hours: _hours,
+                        rooms: _rooms,
+                        sessions: _sessions,
+                      ),
                     );
                   },
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             ),
@@ -156,6 +168,7 @@ class _MismatchHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -171,13 +184,13 @@ class _MismatchHint extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Heads up: sessions ($sessions) ≠ rooms hosted ($rooms).',
+                l10n.roomsSessionsMismatch(sessions, rooms),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSecondaryContainer,
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSecondaryContainer,
+                ),
               ),
             ),
           ],

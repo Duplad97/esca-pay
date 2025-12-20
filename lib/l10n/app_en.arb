@@ -1,0 +1,119 @@
+{
+  "@@locale": "en",
+  "appTitle": "EscaPay",
+  "tagline": "get paid for the drama",
+
+  "close": "Close",
+  "save": "Save",
+  "clear": "Clear",
+  "done": "Done",
+
+  "settingsTitle": "Settings",
+  "settingsTooltip": "Settings",
+  "hourlyWage": "Hourly wage",
+  "perRoomBonus": "Per-room bonus",
+  "ftPerHour": "Ft / hour",
+  "ftPerRoom": "Ft / room",
+  "weekStartsOn": "Week starts on",
+  "usedForWeeklyTotals": "Used for weekly totals",
+  "language": "Language",
+  "languageSystem": "System default",
+  "languageEnglish": "English",
+  "languageHungarian": "Hungarian",
+
+  "previousMonthTooltip": "Previous month",
+  "nextMonthTooltip": "Next month",
+
+  "today": "Today",
+  "select": "Select",
+  "summary": "Summary",
+  "selectedCount": "{count} selected",
+  "@selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+
+  "selectedDay": "Selected day",
+  "previousDayTooltip": "Previous day",
+  "nextDayTooltip": "Next day",
+  "hoursRoomsLine": "Hours: {hours} • Rooms: {rooms}",
+  "@hoursRoomsLine": {
+    "placeholders": {
+      "hours": { "type": "String" },
+      "rooms": { "type": "int" }
+    }
+  },
+  "noEntryYetHint": "No entry yet — long-press a day to edit",
+  "sessions": "Sessions",
+  "editDay": "Edit day",
+
+  "hoursWorkedTitle": "Hours worked",
+  "hoursWorkedSubtitle": "hours survived (respectfully)",
+  "roomsHostedTitle": "Rooms hosted",
+  "roomsHostedSubtitleNone": "rooms ran today",
+  "roomsHostedSubtitleWithSessions": "sessions saved: {count}",
+  "@roomsHostedSubtitleWithSessions": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "roomsSessionsMismatch": "Heads up: sessions ({sessions}) ≠ rooms hosted ({rooms}).",
+  "@roomsSessionsMismatch": {
+    "placeholders": {
+      "sessions": { "type": "int" },
+      "rooms": { "type": "int" }
+    }
+  },
+
+  "decreaseTooltip": "Decrease",
+  "increaseTooltip": "Increase",
+
+  "selectAtLeastOneDay": "Select at least one day",
+  "selectedDaysTitle": "Selected days",
+  "totalWage": "Total wage",
+  "xDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@xDays": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "hours": "Hours",
+  "rooms": "Rooms",
+
+  "sessionsSheetEmpty": "No sessions yet.\nTap “Add session”.",
+  "addSession": "Add session",
+  "saveSession": "Save session",
+  "sessionNumber": "Session #{number}",
+  "@sessionNumber": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "remove": "Remove",
+  "edit": "Edit",
+  "finishCurrentSessionFirst": "Finish the current session first",
+  "pickRoomNameToSave": "Pick a room name to save this session",
+  "pickTimeToSave": "Pick a time to save this session",
+  "roomName": "Room name",
+  "time": "Time",
+  "guests": "Guests",
+  "payment": "Payment",
+  "paymentCash": "Cash",
+  "paymentCard": "Card",
+  "paymentTransfer": "Transfer",
+  "satisfaction": "Satisfaction",
+  "yes": "Yes",
+  "no": "No",
+  "guestsChip": "{count} guests",
+  "@guestsChip": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "satisfied": "Satisfied",
+  "notSatisfied": "Not satisfied",
+
+  "pickARoom": "Pick a room",
+  "search": "Search",
+
+  "tapToFlap": "Tap to flap",
+  "gameOverTapToRetry": "Game over — tap to retry",
+  "scoreLabel": "Score",
+  "bestLabel": "Best"
+}

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
-import '../../shared/utils/date_time_utils.dart';
 import '../../shared/storage/storage.dart';
+import '../../app/app_settings_controller.dart';
+import '../../shared/utils/date_time_utils.dart';
+import '../../shared/utils/localized_date_labels.dart';
 import 'models/day_entry.dart';
 import 'models/game_session.dart';
 import 'models/rates.dart';
@@ -11,6 +14,7 @@ import 'widgets/edit_sessions_sheet.dart';
 import 'widgets/rates_sheet.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/selected_day_header.dart';
+import 'widgets/selected_days_summary_sheet.dart';
 import 'widgets/top_bar.dart';
 
 class PayCalendarPage extends StatefulWidget {
@@ -23,9 +27,13 @@ class PayCalendarPage extends StatefulWidget {
 class _PayCalendarPageState extends State<PayCalendarPage> {
   DateTime _visibleMonth = dateOnly(DateTime.now());
   DateTime _selectedDay = dateOnly(DateTime.now());
+  bool _multiSelectEnabled = false;
+  final Set<String> _multiSelectedDayKeys = <String>{};
 
   double _hourlyWage = 1600.0;
   double _perRoomBonus = 600.0;
+  int _weekStartWeekday = DateTime.monday;
+  String? _localeCode;
 
   final Map<String, DayEntry> _entriesByDayKey = <String, DayEntry>{};
 
@@ -40,10 +48,19 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   void _loadSavedRates() {
     final savedHourly = settingsStorage.getHourlyWage();
     final savedPerRoom = settingsStorage.getPerRoomBonus();
-    if (savedHourly == null && savedPerRoom == null) return;
+    final savedWeekStart = settingsStorage.getWeekStartWeekday();
+    final savedLocaleCode = settingsStorage.getLocaleCode();
+    if (savedHourly == null &&
+        savedPerRoom == null &&
+        savedWeekStart == null &&
+        savedLocaleCode == null) {
+      return;
+    }
     setState(() {
       if (savedHourly != null) _hourlyWage = savedHourly;
       if (savedPerRoom != null) _perRoomBonus = savedPerRoom;
+      if (savedWeekStart != null) _weekStartWeekday = savedWeekStart;
+      _localeCode = savedLocaleCode;
     });
   }
 
@@ -84,33 +101,79 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
               TopBar(
                 month: _visibleMonth,
                 onPrevMonth: () => setState(() {
-                  _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month - 1, 1);
+                  _visibleMonth = DateTime(
+                    _visibleMonth.year,
+                    _visibleMonth.month - 1,
+                    1,
+                  );
                 }),
                 onNextMonth: () => setState(() {
-                  _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month + 1, 1);
+                  _visibleMonth = DateTime(
+                    _visibleMonth.year,
+                    _visibleMonth.month + 1,
+                    1,
+                  );
                 }),
                 onRates: () => _openRatesSheet(context),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                child: SummaryRow(
-                  weekLabel: weekRangeLabel(_selectedDay),
-                  weekTotal: _earningsForWeekContaining(_selectedDay),
-                  monthLabel: monthTitle(_visibleMonth),
-                  monthTotal: _earningsForMonth(_visibleMonth),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                child: SelectedDayHeader(
-                  selectedDay: _selectedDay,
-                  entry: _entryForDay(_selectedDay),
-                  dayTotal: _earningsForDay(_selectedDay),
-                  onPrevDay: () => _selectDay(_selectedDay.subtract(const Duration(days: 1))),
-                  onNextDay: () => _selectDay(_selectedDay.add(const Duration(days: 1))),
-                  onEditSessions: () => _openSessionsSheet(context, _selectedDay),
-                  onEditDay: () => _openEditSheet(context, _selectedDay, colorScheme),
-                ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (Widget child, Animation<double> anim) {
+                  return SizeTransition(
+                    sizeFactor: anim,
+                    axisAlignment: -1,
+                    child: FadeTransition(opacity: anim, child: child),
+                  );
+                },
+                child: _multiSelectEnabled
+                    ? const SizedBox.shrink(key: ValueKey('selection_mode_on'))
+                    : Column(
+                        key: const ValueKey('selection_mode_off'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                            child: SummaryRow(
+                              weekLabel: weekRangeLabelL10n(
+                                context,
+                                _selectedDay,
+                                _weekStartWeekday,
+                              ),
+                              weekTotal: _earningsForWeekContaining(
+                                _selectedDay,
+                              ),
+                              monthLabel: monthTitleL10n(
+                                context,
+                                _visibleMonth,
+                              ),
+                              monthTotal: _earningsForMonth(_visibleMonth),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                            child: SelectedDayHeader(
+                              selectedDay: _selectedDay,
+                              entry: _entryForDay(_selectedDay),
+                              dayTotal: _earningsForDay(_selectedDay),
+                              onPrevDay: () => _selectDay(
+                                _selectedDay.subtract(const Duration(days: 1)),
+                              ),
+                              onNextDay: () => _selectDay(
+                                _selectedDay.add(const Duration(days: 1)),
+                              ),
+                              onEditSessions: () =>
+                                  _openSessionsSheet(context, _selectedDay),
+                              onEditDay: () => _openEditSheet(
+                                context,
+                                _selectedDay,
+                                colorScheme,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
               ),
               Expanded(
                 child: Padding(
@@ -119,12 +182,29 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                     month: _visibleMonth,
                     selectedDay: _selectedDay,
                     hasEntryForDay: (DateTime day) => _hasEntryForDay(day),
-                    onSelectDay: (DateTime day) => _selectDay(day),
+                    isDayMultiSelected: (DateTime day) =>
+                        _multiSelectedDayKeys.contains(dayKey(day)),
+                    onSelectDay: (DateTime day) {
+                      if (_multiSelectEnabled) {
+                        _toggleMultiSelectedDay(day);
+                      } else {
+                        _selectDay(day);
+                      }
+                    },
+                    onDragSelectDay: (DateTime day) =>
+                        _addMultiSelectedDay(day),
                     onEditDay: (DateTime day) {
                       _selectDay(day);
                       _openEditSheet(context, day, colorScheme);
                     },
                     onToday: () => _selectDay(DateTime.now()),
+                    multiSelectEnabled: _multiSelectEnabled,
+                    onToggleMultiSelect: _toggleMultiSelect,
+                    multiSelectedCount: _multiSelectedDayKeys.length,
+                    onClearMultiSelect: () =>
+                        setState(_multiSelectedDayKeys.clear),
+                    onShowMultiSelectSummary: () =>
+                        _openSelectedDaysSummary(context),
                   ),
                 ),
               ),
@@ -135,13 +215,91 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     );
   }
 
-  void _selectDay(DateTime day) {
-    final d = dateOnly(day);
+  void _toggleMultiSelect() {
     setState(() {
-      _selectedDay = d;
-      if (_visibleMonth.year != d.year || _visibleMonth.month != d.month) {
-        _visibleMonth = DateTime(d.year, d.month, 1);
+      _multiSelectEnabled = !_multiSelectEnabled;
+      _multiSelectedDayKeys.clear();
+      if (_multiSelectEnabled) {
+        _multiSelectedDayKeys.add(dayKey(_selectedDay));
       }
+    });
+  }
+
+  void _setSelectedDayInState(DateTime day) {
+    final d = dateOnly(day);
+    _selectedDay = d;
+    if (_visibleMonth.year != d.year || _visibleMonth.month != d.month) {
+      _visibleMonth = DateTime(d.year, d.month, 1);
+    }
+  }
+
+  void _toggleMultiSelectedDay(DateTime day) {
+    final d = dateOnly(day);
+    final key = dayKey(d);
+    setState(() {
+      if (_multiSelectedDayKeys.contains(key)) {
+        if (_multiSelectedDayKeys.length == 1) {
+          _setSelectedDayInState(d);
+          return;
+        }
+
+        _multiSelectedDayKeys.remove(key);
+
+        if (dayKey(_selectedDay) == key) {
+          _setSelectedDayInState(DateTime.parse(_multiSelectedDayKeys.last));
+        }
+      } else {
+        _multiSelectedDayKeys.add(key);
+        _setSelectedDayInState(d);
+      }
+    });
+  }
+
+  void _addMultiSelectedDay(DateTime day) {
+    if (!_multiSelectEnabled) return;
+    final d = dateOnly(day);
+    final key = dayKey(d);
+    setState(() {
+      _multiSelectedDayKeys.add(key);
+      _setSelectedDayInState(d);
+    });
+  }
+
+  Future<void> _openSelectedDaysSummary(BuildContext context) async {
+    if (_multiSelectedDayKeys.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.selectAtLeastOneDay)));
+      return;
+    }
+    final days = _multiSelectedDayKeys
+        .map(DateTime.parse)
+        .toList(growable: false);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return SelectedDaysSummarySheet(
+          selectedDays: days,
+          entryForDay: _entryForDay,
+          hourlyWage: _hourlyWage,
+          perRoomBonus: _perRoomBonus,
+        );
+      },
+    );
+  }
+
+  void _selectDay(DateTime day) {
+    setState(() {
+      _setSelectedDayInState(day);
     });
   }
 
@@ -153,10 +311,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
 
   DayEntry? _entryForDay(DateTime day) => _entriesByDayKey[dayKey(day)];
 
-  bool _hasEntryForDay(DateTime day) => _entriesByDayKey.containsKey(dayKey(day));
+  bool _hasEntryForDay(DateTime day) =>
+      _entriesByDayKey.containsKey(dayKey(day));
 
   double _earningsForWeekContaining(DateTime day) {
-    final start = startOfWeek(day);
+    final start = startOfWeekWith(day, _weekStartWeekday);
     double total = 0;
     for (var i = 0; i < 7; i++) {
       total += _earningsForDay(start.add(Duration(days: i)));
@@ -174,7 +333,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     return total;
   }
 
-  Future<void> _openEditSheet(BuildContext context, DateTime day, ColorScheme colorScheme) async {
+  Future<void> _openEditSheet(
+    BuildContext context,
+    DateTime day,
+    ColorScheme colorScheme,
+  ) async {
     final key = dayKey(day);
     final existing = _entriesByDayKey[key];
     final result = await showModalBottomSheet<DayEntry?>(
@@ -228,11 +391,16 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       final current = _entriesByDayKey[key];
       final prevRooms = current?.rooms ?? 0;
       final prevSessionsCount = current?.sessions.length ?? 0;
-      final userCustomizedRooms = current != null && prevRooms != prevSessionsCount;
+      final userCustomizedRooms =
+          current != null && prevRooms != prevSessionsCount;
       final nextRooms = userCustomizedRooms ? prevRooms : sessions.length;
       final nextHours = current?.hours ?? 0;
 
-      final nextEntry = DayEntry(hours: nextHours, rooms: nextRooms, sessions: sessions);
+      final nextEntry = DayEntry(
+        hours: nextHours,
+        rooms: nextRooms,
+        sessions: sessions,
+      );
 
       if (!mounted) return;
       if (nextEntry.isEmpty) {
@@ -286,6 +454,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         return RatesSheet(
           initialHourlyWage: _hourlyWage,
           initialPerRoomBonus: _perRoomBonus,
+          initialWeekStartWeekday: _weekStartWeekday,
+          initialLocaleCode: _localeCode,
         );
       },
     );
@@ -295,8 +465,12 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     setState(() {
       _hourlyWage = result.hourlyWage;
       _perRoomBonus = result.perRoomBonus;
+      _weekStartWeekday = result.weekStartWeekday;
+      _localeCode = result.localeCode;
     });
     await settingsStorage.setHourlyWage(_hourlyWage);
     await settingsStorage.setPerRoomBonus(_perRoomBonus);
+    await settingsStorage.setWeekStartWeekday(_weekStartWeekday);
+    await appSettingsController.setLocaleCode(_localeCode);
   }
 }

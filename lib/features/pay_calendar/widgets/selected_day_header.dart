@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
-import '../../../shared/utils/date_time_utils.dart';
+import '../../../shared/utils/localized_date_labels.dart';
 import '../../../shared/utils/money_format.dart';
+import '../../../shared/widgets/marquee_text.dart';
 import '../models/day_entry.dart';
 
 class SelectedDayHeader extends StatelessWidget {
@@ -27,6 +29,7 @@ class SelectedDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final hours = entry?.hours ?? 0;
     final rooms = entry?.rooms ?? 0;
@@ -52,7 +55,7 @@ class SelectedDayHeader extends StatelessWidget {
             Row(
               children: <Widget>[
                 IconButton(
-                  tooltip: 'Previous day',
+                  tooltip: l10n.previousDayTooltip,
                   onPressed: () {
                     HapticFeedback.selectionClick();
                     onPrevDay();
@@ -64,25 +67,21 @@ class SelectedDayHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Selected day',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+                        l10n.selectedDay,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: colorScheme.onSurfaceVariant),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        selectedDayLabel(selectedDay),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ),
+                      MarqueeText(
+                        selectedDayLabelL10n(context, selectedDay),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Next day',
+                  tooltip: l10n.nextDayTooltip,
                   onPressed: () {
                     HapticFeedback.selectionClick();
                     onNextDay();
@@ -100,9 +99,8 @@ class SelectedDayHeader extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       money(dayTotal),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w900),
                     ),
                   ),
                 ),
@@ -111,14 +109,14 @@ class SelectedDayHeader extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               hasEntry
-                  ? 'Hours: ${_formatHours(hours)} • Rooms: $rooms'
-                  : 'No entry yet — long-press a day to edit',
+                  ? l10n.hoursRoomsLine(_formatHours(hours), rooms)
+                  : l10n.noEntryYetHint,
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 10),
             Row(
@@ -127,7 +125,7 @@ class SelectedDayHeader extends StatelessWidget {
                   child: _ActionButton(
                     tonal: true,
                     icon: Icons.badge,
-                    label: 'Sessions',
+                    label: l10n.sessions,
                     onPressed: () {
                       HapticFeedback.lightImpact();
                       onEditSessions();
@@ -139,7 +137,7 @@ class SelectedDayHeader extends StatelessWidget {
                   child: _ActionButton(
                     tonal: false,
                     icon: Icons.edit,
-                    label: 'Edit day',
+                    label: l10n.editDay,
                     onPressed: () {
                       HapticFeedback.lightImpact();
                       onEditDay();
@@ -190,10 +188,7 @@ class _ActionButton extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.center,
-            child: Text(
-              label,
-              maxLines: 1,
-            ),
+            child: Text(label, maxLines: 1),
           ),
         ),
       ],
@@ -207,10 +202,6 @@ class _ActionButton extends StatelessWidget {
       );
     }
 
-    return FilledButton(
-      style: style,
-      onPressed: onPressed,
-      child: child,
-    );
+    return FilledButton(style: style, onPressed: onPressed, child: child);
   }
 }

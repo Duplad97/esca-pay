@@ -9,6 +9,7 @@ class DayCell extends StatelessWidget {
     required this.day,
     required this.isSelected,
     required this.hasEntry,
+    required this.isMultiSelected,
     required this.onTap,
     required this.onLongPress,
   });
@@ -16,6 +17,7 @@ class DayCell extends StatelessWidget {
   final DateTime day;
   final bool isSelected;
   final bool hasEntry;
+  final bool isMultiSelected;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
 
@@ -27,8 +29,10 @@ class DayCell extends StatelessWidget {
     final borderColor = isSelected
         ? colorScheme.primary
         : isToday
-            ? colorScheme.secondary
-            : colorScheme.outlineVariant;
+        ? colorScheme.secondary
+        : isMultiSelected
+        ? colorScheme.primary.withValues(alpha: 0.75)
+        : colorScheme.outlineVariant;
 
     final background = isSelected
         ? LinearGradient(
@@ -37,6 +41,17 @@ class DayCell extends StatelessWidget {
             colors: <Color>[
               colorScheme.primaryContainer.withValues(alpha: 1),
               colorScheme.secondaryContainer.withValues(alpha: 0.95),
+            ],
+          )
+        : null;
+
+    final multiSelectedGradient = (!isSelected && isMultiSelected)
+        ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[
+              colorScheme.primaryContainer.withValues(alpha: 0.65),
+              Colors.white.withValues(alpha: 0.96),
             ],
           )
         : null;
@@ -55,10 +70,13 @@ class DayCell extends StatelessWidget {
     final decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(16),
       border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
-      color: (background == null && setupGradient == null)
+      color:
+          (background == null &&
+              setupGradient == null &&
+              multiSelectedGradient == null)
           ? Colors.white.withValues(alpha: 0.85)
           : null,
-      gradient: background ?? setupGradient,
+      gradient: background ?? multiSelectedGradient ?? setupGradient,
       boxShadow: isSelected
           ? <BoxShadow>[
               BoxShadow(
@@ -89,8 +107,12 @@ class DayCell extends StatelessWidget {
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 final canShowTodayIcon = isToday && constraints.maxWidth >= 32;
-                final canShowEntryBadge = hasEntry && constraints.maxWidth >= 28;
-                final canShowTinyEntryDot = hasEntry && constraints.maxWidth < 28;
+                final canShowEntryBadge =
+                    hasEntry && constraints.maxWidth >= 28;
+                final canShowTinyEntryDot =
+                    hasEntry && constraints.maxWidth < 28;
+                final canShowMultiBadge =
+                    isMultiSelected && constraints.maxWidth >= 28;
                 return Stack(
                   children: <Widget>[
                     Positioned(
@@ -100,9 +122,8 @@ class DayCell extends StatelessWidget {
                         '${day.day}',
                         maxLines: 1,
                         overflow: TextOverflow.clip,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ),
                     if (canShowTodayIcon)
@@ -115,6 +136,41 @@ class DayCell extends StatelessWidget {
                           color: colorScheme.secondary,
                         ),
                       ),
+                    if (canShowMultiBadge)
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: colorScheme.primary,
+                              width: 2,
+                            ),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.16,
+                                ),
+                                blurRadius: 10,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: Center(
+                              child: Icon(
+                                Icons.check,
+                                size: 12,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     if (canShowEntryBadge)
                       Positioned(
                         bottom: -1,
@@ -125,7 +181,9 @@ class DayCell extends StatelessWidget {
                             shape: BoxShape.circle,
                             boxShadow: <BoxShadow>[
                               BoxShadow(
-                                color: colorScheme.primary.withValues(alpha: 0.18),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.18,
+                                ),
                                 blurRadius: 10,
                                 offset: const Offset(0, 6),
                               ),
@@ -135,7 +193,11 @@ class DayCell extends StatelessWidget {
                             width: 14,
                             height: 14,
                             child: Center(
-                              child: Icon(Icons.check, size: 10, color: Colors.white),
+                              child: Icon(
+                                Icons.check,
+                                size: 10,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

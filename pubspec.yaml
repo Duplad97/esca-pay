@@ -9,8 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  intl: ^0.20.2
   path_provider: ^2.1.5
 
 dev_dependencies:
@@ -26,5 +29,6 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - lib/assets/

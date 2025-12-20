@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
 class StepperRow extends StatelessWidget {
   const StepperRow({
@@ -18,6 +19,7 @@ class StepperRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -50,7 +52,7 @@ class StepperRow extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: 'Decrease',
+              tooltip: l10n.decreaseTooltip,
               onPressed: onMinus,
               icon: const Icon(Icons.remove_circle_outline),
             ),
@@ -66,7 +68,7 @@ class StepperRow extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: 'Increase',
+              tooltip: l10n.increaseTooltip,
               onPressed: onPlus,
               icon: const Icon(Icons.add_circle_outline),
             ),
@@ -76,4 +78,3 @@ class StepperRow extends StatelessWidget {
     );
   }
 }
-

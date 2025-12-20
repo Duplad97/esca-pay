@@ -1,0 +1,134 @@
+{
+  "@@locale": "hu",
+  "appTitle": "EscaPay",
+  "tagline": "fizetés a drámáért",
+  "close": "Bezárás",
+  "save": "Mentés",
+  "clear": "Törlés",
+  "done": "Kész",
+  "settingsTitle": "Beállítások",
+  "settingsTooltip": "Beállítások",
+  "hourlyWage": "Órabér",
+  "perRoomBonus": "Szobánkénti bónusz",
+  "ftPerHour": "Ft / óra",
+  "ftPerRoom": "Ft / szoba",
+  "weekStartsOn": "A hét kezdete",
+  "usedForWeeklyTotals": "Heti összesítéshez",
+  "language": "Nyelv",
+  "languageSystem": "Rendszer",
+  "languageEnglish": "Angol",
+  "languageHungarian": "Magyar",
+  "previousMonthTooltip": "Előző hónap",
+  "nextMonthTooltip": "Következő hónap",
+  "today": "Ma",
+  "select": "Kijelölés",
+  "summary": "Összegzés",
+  "selectedCount": "{count} kijelölve",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weekly": "Heti",
+  "monthly": "Havi",
+  "selectedDay": "Kiválasztott nap",
+  "previousDayTooltip": "Előző nap",
+  "nextDayTooltip": "Következő nap",
+  "hoursRoomsLine": "Óra: {hours} • Szoba: {rooms}",
+  "@hoursRoomsLine": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "rooms": {
+        "type": "int"
+      }
+    }
+  },
+  "noEntryYetHint": "Nincs bejegyzés",
+  "sessions": "Játékok",
+  "editDay": "Nap szerkesztése",
+  "hoursWorkedTitle": "Ledolgozott órák",
+  "hoursWorkedSubtitle": "túlél(t) órák (tisztelettel)",
+  "roomsHostedTitle": "Levezetett szobák",
+  "roomsHostedSubtitleNone": "mai szobák",
+  "roomsHostedSubtitleWithSessions": "mentett játékok: {count}",
+  "@roomsHostedSubtitleWithSessions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roomsSessionsMismatch": "Figyi: játékok ({sessions}) ≠ szobák ({rooms}).",
+  "@roomsSessionsMismatch": {
+    "placeholders": {
+      "sessions": {
+        "type": "int"
+      },
+      "rooms": {
+        "type": "int"
+      }
+    }
+  },
+  "decreaseTooltip": "Csökkentés",
+  "increaseTooltip": "Növelés",
+  "selectAtLeastOneDay": "Válassz ki legalább egy napot",
+  "selectedDaysTitle": "Kijelölt napok",
+  "totalWage": "Összes bér",
+  "xDays": "{count, plural, =1{1 nap} other{{count} nap}}",
+  "@xDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hours": "Óra",
+  "rooms": "Szoba",
+  "sessionsSheetEmpty": "Még nincs Játék.\nNyomd meg: „Játék hozzáadása”.",
+  "addSession": "Játék hozzáadása",
+  "saveSession": "Játék mentése",
+  "sessionNumber": "Játék #{number}",
+  "@sessionNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "remove": "Törlés",
+  "edit": "Szerkesztés",
+  "finishCurrentSessionFirst": "Előbb fejezd be az aktuális játékot",
+  "pickRoomNameToSave": "Válassz szobanevet a mentéshez",
+  "pickTimeToSave": "Válassz időpontot a mentéshez",
+  "roomName": "Szoba neve",
+  "time": "Időpont",
+  "guests": "Vendégek",
+  "payment": "Fizetési mód",
+  "paymentCash": "Készpénz",
+  "paymentCard": "Kártya",
+  "paymentTransfer": "Átutalás",
+  "satisfaction": "Elégedettség",
+  "yes": "Igen",
+  "no": "Nem",
+  "guestsChip": "{count} vendég",
+  "@guestsChip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "satisfied": "Elégedett",
+  "notSatisfied": "Nem elégedett",
+  "pickARoom": "Szoba választása",
+  "search": "Keresés",
+
+  "tapToFlap": "Koppints a repüléshez",
+  "gameOverTapToRetry": "Vége — koppints az újrakezdéshez",
+  "scoreLabel": "Pont",
+  "bestLabel": "Rekord"
+}

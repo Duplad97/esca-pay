@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
 import 'money_field.dart';
 
@@ -27,8 +28,12 @@ class _RatesCardState extends State<RatesCard> {
   @override
   void initState() {
     super.initState();
-    _wageController = TextEditingController(text: widget.hourlyWage.toStringAsFixed(0));
-    _bonusController = TextEditingController(text: widget.perRoomBonus.toStringAsFixed(0));
+    _wageController = TextEditingController(
+      text: widget.hourlyWage.toStringAsFixed(0),
+    );
+    _bonusController = TextEditingController(
+      text: widget.perRoomBonus.toStringAsFixed(0),
+    );
   }
 
   @override
@@ -51,6 +56,7 @@ class _RatesCardState extends State<RatesCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -82,17 +88,17 @@ class _RatesCardState extends State<RatesCard> {
                 Icon(Icons.local_florist, color: colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
-                  'EscaPay',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                  l10n.appTitle,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'get paid for the drama',
+                  l10n.tagline,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -102,8 +108,8 @@ class _RatesCardState extends State<RatesCard> {
                 Expanded(
                   child: MoneyField(
                     controller: _wageController,
-                    label: 'Hourly wage',
-                    helper: 'Ft / hour',
+                    label: l10n.hourlyWage,
+                    helper: l10n.ftPerHour,
                     onChanged: widget.onHourlyWageChanged,
                   ),
                 ),
@@ -111,8 +117,8 @@ class _RatesCardState extends State<RatesCard> {
                 Expanded(
                   child: MoneyField(
                     controller: _bonusController,
-                    label: 'Per-room bonus',
-                    helper: 'Ft / room',
+                    label: l10n.perRoomBonus,
+                    helper: l10n.ftPerRoom,
                     onChanged: widget.onPerRoomBonusChanged,
                   ),
                 ),

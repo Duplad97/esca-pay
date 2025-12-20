@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
 import '../../../shared/utils/money_format.dart';
 
@@ -18,6 +19,7 @@ class SummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -38,7 +40,7 @@ class SummaryRow extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: _TotalTile(
-                title: 'Weekly',
+                title: l10n.weekly,
                 subtitle: weekLabel,
                 total: weekTotal,
                 icon: Icons.auto_graph,
@@ -47,7 +49,7 @@ class SummaryRow extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: _TotalTile(
-                title: 'Monthly',
+                title: l10n.monthly,
                 subtitle: monthLabel,
                 total: monthTotal,
                 icon: Icons.stars,
@@ -98,9 +100,9 @@ class _TotalTile extends StatelessWidget {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900),
               ),
             ),
           ],
@@ -111,8 +113,8 @@ class _TotalTile extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 6),
         FittedBox(
@@ -120,9 +122,9 @@ class _TotalTile extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             money(total),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
           ),
         ),
       ],

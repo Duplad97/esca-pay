@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
 import '../models/game_session.dart';
 import '../models/room_constants.dart';
@@ -71,7 +72,8 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
   }
 
   void _showSingleEditorMessage() {
-    _showSnackBar('Finish the current session first');
+    final l10n = AppLocalizations.of(context)!;
+    _showSnackBar(l10n.finishCurrentSessionFirst);
   }
 
   void _showSaveError(String message) {
@@ -79,7 +81,8 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
   }
 
   void _showSnackBar(String message) {
-    final messenger = _messengerKey.currentState ?? ScaffoldMessenger.of(context);
+    final messenger =
+        _messengerKey.currentState ?? ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -93,18 +96,14 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     return ScaffoldMessenger(
       key: _messengerKey,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 12,
-            bottom: 16,
-          ),
+          padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 16),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,14 +113,14 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                   Icon(Icons.badge, color: cs.primary),
                   const SizedBox(width: 8),
                   Text(
-                    'Sessions',
+                    l10n.sessions,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
-                    tooltip: 'Close',
+                    tooltip: l10n.close,
                     onPressed: () {
                       HapticFeedback.selectionClick();
                       Navigator.of(context).pop();
@@ -135,9 +134,10 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                 child: _sessions.isEmpty
                     ? Center(
                         child: Text(
-                          'No sessions yet.\nTap “Add session”.',
+                          l10n.sessionsSheetEmpty,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 color: cs.onSurfaceVariant,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -165,21 +165,27 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                             onSaveToggle: (bool isSaved) {
                               HapticFeedback.lightImpact();
                               setState(() {
-                                _sessions[index] = item.copyWith(isSaved: isSaved);
+                                _sessions[index] = item.copyWith(
+                                  isSaved: isSaved,
+                                );
                               });
                               _emitSavedSessions();
                             },
                             onSaveRequested: () {
                               final draft = _sessions[index].draft;
-                              if (draft.roomNameController.text.trim().isEmpty) {
+                              if (draft.roomNameController.text
+                                  .trim()
+                                  .isEmpty) {
                                 HapticFeedback.selectionClick();
-                                _showSaveError('Pick a room name to save this session');
+                                _showSaveError(l10n.pickRoomNameToSave);
                                 _scrollToIndex(index);
                                 return;
                               }
-                              if (draft.timeSlotController.text.trim().isEmpty) {
+                              if (draft.timeSlotController.text
+                                  .trim()
+                                  .isEmpty) {
                                 HapticFeedback.selectionClick();
-                                _showSaveError('Pick a time to save this session');
+                                _showSaveError(l10n.pickTimeToSave);
                                 _scrollToIndex(index);
                                 return;
                               }
@@ -190,8 +196,9 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                               _emitSavedSessions();
                             },
                             onEditRequested: () {
-                              final openIndex =
-                                  _sessions.indexWhere((s) => s.isSaved == false);
+                              final openIndex = _sessions.indexWhere(
+                                (s) => s.isSaved == false,
+                              );
                               if (openIndex != -1 && openIndex != index) {
                                 _showSingleEditorMessage();
                                 _scrollToIndex(openIndex);
@@ -199,7 +206,9 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                               }
                               HapticFeedback.lightImpact();
                               setState(() {
-                                _sessions[index] = item.copyWith(isSaved: false);
+                                _sessions[index] = item.copyWith(
+                                  isSaved: false,
+                                );
                               });
                               _scrollToIndex(index);
                             },
@@ -212,8 +221,9 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                 children: <Widget>[
                   FilledButton.tonalIcon(
                     onPressed: () {
-                      final openIndex =
-                          _sessions.indexWhere((s) => s.isSaved == false);
+                      final openIndex = _sessions.indexWhere(
+                        (s) => s.isSaved == false,
+                      );
                       if (openIndex != -1) {
                         HapticFeedback.selectionClick();
                         _showSingleEditorMessage();
@@ -232,7 +242,7 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
                       _scrollToIndex(_sessions.length - 1);
                     },
                     icon: const Icon(Icons.add),
-                    label: const Text('Add session'),
+                    label: Text(l10n.addSession),
                   ),
                   const Spacer(),
                 ],
@@ -262,6 +272,7 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -290,14 +301,14 @@ class _SessionCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 Text(
-                  'Session #${index + 1}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                  l10n.sessionNumber(index + 1),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
                 const Spacer(),
                 IconButton(
-                  tooltip: 'Remove',
+                  tooltip: l10n.remove,
                   onPressed: onRemove,
                   icon: const Icon(Icons.close),
                 ),
@@ -307,9 +318,9 @@ class _SessionCard extends StatelessWidget {
             TextField(
               controller: draft.roomNameController,
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Room name',
-                suffixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                labelText: l10n.roomName,
+                suffixIcon: const Icon(Icons.search),
               ),
               onTap: () async {
                 HapticFeedback.selectionClick();
@@ -320,7 +331,9 @@ class _SessionCard extends StatelessWidget {
                   showDragHandle: true,
                   backgroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28),
+                    ),
                   ),
                   builder: (BuildContext context) {
                     return const _RoomPickerSheet();
@@ -343,13 +356,15 @@ class _SessionCard extends StatelessWidget {
                     requestFocusOnTap: true,
                     expandedInsets: EdgeInsets.zero,
                     inputDecorationTheme: _dropdownInputTheme(context),
-                    label: const Text('Time'),
+                    label: Text(l10n.time),
                     onSelected: (String? v) {
                       draft.timeSlotController.text = v ?? '';
                       onChanged();
                     },
                     dropdownMenuEntries: timeSlots
-                        .map((t) => DropdownMenuEntry<String>(value: t, label: t))
+                        .map(
+                          (t) => DropdownMenuEntry<String>(value: t, label: t),
+                        )
                         .toList(growable: false),
                   ),
                 ),
@@ -358,7 +373,7 @@ class _SessionCard extends StatelessWidget {
                   child: TextField(
                     controller: draft.guestsController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Guests'),
+                    decoration: InputDecoration(labelText: l10n.guests),
                     onChanged: (_) => onChanged(),
                   ),
                 ),
@@ -366,12 +381,12 @@ class _SessionCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _SegmentedPicker<PaymentMethod>(
-              label: 'Payment',
+              label: l10n.payment,
               value: draft.paymentMethod,
-              items: const <PaymentMethod, String>{
-                PaymentMethod.cash: 'Cash',
-                PaymentMethod.card: 'Card',
-                PaymentMethod.transfer: 'Transfer',
+              items: <PaymentMethod, String>{
+                PaymentMethod.cash: l10n.paymentCash,
+                PaymentMethod.card: l10n.paymentCard,
+                PaymentMethod.transfer: l10n.paymentTransfer,
               },
               icons: const <PaymentMethod, IconData>{
                 PaymentMethod.cash: Icons.payments_outlined,
@@ -385,9 +400,9 @@ class _SessionCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _SegmentedPicker<bool>(
-              label: 'Satisfaction',
+              label: l10n.satisfaction,
               value: draft.satisfactionYes,
-              items: const <bool, String>{true: 'Yes', false: 'No'},
+              items: <bool, String>{true: l10n.yes, false: l10n.no},
               icons: const <bool, IconData>{
                 true: Icons.sentiment_satisfied_alt,
                 false: Icons.sentiment_dissatisfied,
@@ -401,10 +416,7 @@ class _SessionCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 const Spacer(),
-                FilledButton(
-                  onPressed: onSave,
-                  child: const Text('Save session'),
-                ),
+                FilledButton(onPressed: onSave, child: Text(l10n.saveSession)),
               ],
             ),
           ],
@@ -469,8 +481,9 @@ class _SavedSessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
-    final room = session.roomName.isEmpty ? 'Room name' : session.roomName;
+    final room = session.roomName.isEmpty ? l10n.roomName : session.roomName;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -493,19 +506,19 @@ class _SavedSessionTile extends StatelessWidget {
             Row(
               children: <Widget>[
                 Text(
-                  'Session #${index + 1}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                  l10n.sessionNumber(index + 1),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
                 const Spacer(),
                 IconButton(
-                  tooltip: 'Edit',
+                  tooltip: l10n.edit,
                   onPressed: onEdit,
                   icon: const Icon(Icons.edit),
                 ),
                 IconButton(
-                  tooltip: 'Remove',
+                  tooltip: l10n.remove,
                   onPressed: onRemove,
                   icon: const Icon(Icons.close),
                 ),
@@ -516,9 +529,9 @@ class _SavedSessionTile extends StatelessWidget {
               room,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -526,13 +539,21 @@ class _SavedSessionTile extends StatelessWidget {
               runSpacing: 8,
               children: <Widget>[
                 _Chip(icon: Icons.schedule, label: session.timeSlot),
-                _Chip(icon: Icons.group_outlined, label: '${session.guests} guests'),
-                _Chip(icon: _paymentIcon(session.paymentMethod), label: _paymentLabel(session.paymentMethod)),
+                _Chip(
+                  icon: Icons.group_outlined,
+                  label: l10n.guestsChip(session.guests),
+                ),
+                _Chip(
+                  icon: _paymentIcon(session.paymentMethod),
+                  label: _paymentLabel(context, session.paymentMethod),
+                ),
                 _Chip(
                   icon: session.satisfactionYes
                       ? Icons.sentiment_satisfied_alt
                       : Icons.sentiment_dissatisfied,
-                  label: session.satisfactionYes ? 'Satisfied' : 'Not satisfied',
+                  label: session.satisfactionYes
+                      ? l10n.satisfied
+                      : l10n.notSatisfied,
                 ),
               ],
             ),
@@ -550,11 +571,12 @@ class _SavedSessionTile extends StatelessWidget {
     };
   }
 
-  String _paymentLabel(PaymentMethod m) {
+  String _paymentLabel(BuildContext context, PaymentMethod m) {
+    final l10n = AppLocalizations.of(context)!;
     return switch (m) {
-      PaymentMethod.cash => 'Cash',
-      PaymentMethod.card => 'Card',
-      PaymentMethod.transfer => 'Transfer',
+      PaymentMethod.cash => l10n.paymentCash,
+      PaymentMethod.card => l10n.paymentCard,
+      PaymentMethod.transfer => l10n.paymentTransfer,
     };
   }
 }
@@ -585,9 +607,9 @@ class _Chip extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -618,10 +640,7 @@ class _SegmentedPicker<T> extends StatelessWidget {
         .map(
           (e) => ButtonSegment<T>(
             value: e.key,
-            label: _SegmentLabel(
-              text: e.value,
-              icon: icons?[e.key],
-            ),
+            label: _SegmentLabel(text: e.value, icon: icons?[e.key]),
           ),
         )
         .toList(growable: false);
@@ -639,9 +658,9 @@ class _SegmentedPicker<T> extends StatelessWidget {
           children: <Widget>[
             Text(
               label,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
             SegmentedButton<T>(
@@ -668,9 +687,9 @@ class _SegmentLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w800,
-        );
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800);
 
     if (icon == null) return Text(text, style: labelStyle);
     return Row(
@@ -734,11 +753,14 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     final q = _searchController.text.trim().toLowerCase();
     final filtered = q.isEmpty
         ? roomNames
-        : roomNames.where((r) => r.toLowerCase().contains(q)).toList(growable: false);
+        : roomNames
+              .where((r) => r.toLowerCase().contains(q))
+              .toList(growable: false);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -756,14 +778,14 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
               Icon(Icons.search, color: cs.primary),
               const SizedBox(width: 8),
               Text(
-                'Pick a room',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                l10n.pickARoom,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
               ),
               const Spacer(),
               IconButton(
-                tooltip: 'Close',
+                tooltip: l10n.close,
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close),
               ),
@@ -773,9 +795,9 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
           TextField(
             controller: _searchController,
             autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Search',
-              prefixIcon: Icon(Icons.search),
+            decoration: InputDecoration(
+              labelText: l10n.search,
+              prefixIcon: const Icon(Icons.search),
             ),
             onChanged: (_) => setState(() {}),
           ),
@@ -817,9 +839,9 @@ class _SessionDraft {
     required int guests,
     required this.paymentMethod,
     required this.satisfactionYes,
-  })  : roomNameController = TextEditingController(text: roomName),
-        timeSlotController = TextEditingController(text: timeSlot),
-        guestsController = TextEditingController(text: guests.toString());
+  }) : roomNameController = TextEditingController(text: roomName),
+       timeSlotController = TextEditingController(text: timeSlot),
+       guestsController = TextEditingController(text: guests.toString());
 
   factory _SessionDraft.defaultValue() {
     return _SessionDraft(

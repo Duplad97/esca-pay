@@ -29,7 +29,11 @@ String selectedDayLabel(DateTime dt) {
 }
 
 String weekRangeLabel(DateTime anyDayInWeek) {
-  final start = startOfWeek(anyDayInWeek);
+  return weekRangeLabelWith(anyDayInWeek, DateTime.monday);
+}
+
+String weekRangeLabelWith(DateTime anyDayInWeek, int weekStartWeekday) {
+  final start = startOfWeekWith(anyDayInWeek, weekStartWeekday);
   final end = start.add(const Duration(days: 6));
   final startText = '${shortMonthName(start)} ${start.day}';
   final endText = '${shortMonthName(end)} ${end.day}';
@@ -51,8 +55,14 @@ String dayKey(DateTime dt) {
 }
 
 DateTime startOfWeek(DateTime day) {
+  return startOfWeekWith(day, DateTime.monday);
+}
+
+DateTime startOfWeekWith(DateTime day, int weekStartWeekday) {
   final d = dateOnly(day);
-  return d.subtract(Duration(days: d.weekday - DateTime.monday));
+  final start = weekStartWeekday.clamp(DateTime.monday, DateTime.sunday);
+  final delta = (d.weekday - start + 7) % 7;
+  return d.subtract(Duration(days: delta));
 }
 
 int daysInMonth(DateTime month) {
