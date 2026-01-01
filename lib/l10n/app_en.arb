@@ -12,8 +12,10 @@
   "settingsTooltip": "Settings",
   "hourlyWage": "Hourly wage",
   "perRoomBonus": "Per-room bonus",
+  "jumpInRate": "Jump-in game rate",
   "ftPerHour": "Ft / hour",
   "ftPerRoom": "Ft / room",
+  "ftPerJumpIn": "Ft / jump-in",
   "weekStartsOn": "Week starts on",
   "usedForWeeklyTotals": "Used for weekly totals",
   "language": "Language",
@@ -111,7 +113,9 @@
 
   "pickARoom": "Pick a room",
   "search": "Search",
-
+  "jumpIn": "Jump-in game",
+  "sessionType": "Session type",
+  "sessionTypeNormal": "Normal",
   "tapToFlap": "Tap to flap",
   "gameOverTapToRetry": "Game over — tap to retry",
   "scoreLabel": "Score",

@@ -31,6 +31,7 @@ class _EditSessionsSheetState extends State<EditSessionsSheet> {
     _sessions = widget.initialSessions
         .map(
           (s) => _SessionDraft(
+            type: s.type,
             roomName: s.roomName,
             timeSlot: s.timeSlot,
             guests: s.guests,
@@ -409,6 +410,23 @@ class _SessionCard extends StatelessWidget {
               },
               onChanged: (v) {
                 draft.satisfactionYes = v;
+                onChanged();
+              },
+            ),
+            const SizedBox(height: 10),
+            _SegmentedPicker<SessionType>(
+              label: l10n.sessionType,
+              value: draft.type,
+              items: <SessionType, String>{
+                SessionType.normal: l10n.sessionTypeNormal,
+                SessionType.jumpIn: l10n.jumpIn,
+              },
+              icons: const <SessionType, IconData>{
+                SessionType.normal: Icons.event,
+                SessionType.jumpIn: Icons.flash_on,
+              },
+              onChanged: (v) {
+                draft.type = v;
                 onChanged();
               },
             ),
@@ -834,6 +852,7 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
 
 class _SessionDraft {
   _SessionDraft({
+    required this.type,
     required String roomName,
     required String timeSlot,
     required int guests,
@@ -845,6 +864,7 @@ class _SessionDraft {
 
   factory _SessionDraft.defaultValue() {
     return _SessionDraft(
+      type: SessionType.normal,
       roomName: '',
       timeSlot: timeSlots.first,
       guests: 2,
@@ -856,6 +876,7 @@ class _SessionDraft {
   final TextEditingController roomNameController;
   final TextEditingController timeSlotController;
   final TextEditingController guestsController;
+  SessionType type;
   PaymentMethod paymentMethod;
   bool satisfactionYes;
 
@@ -868,6 +889,7 @@ class _SessionDraft {
   GameSession toSession() {
     final guests = int.tryParse(guestsController.text.trim()) ?? 0;
     return GameSession(
+      type: type,
       roomName: roomNameController.text.trim(),
       timeSlot: timeSlotController.text.trim(),
       guests: guests.clamp(0, 999),

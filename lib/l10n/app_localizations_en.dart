@@ -39,10 +39,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perRoomBonus => 'Per-room bonus';
 
   @override
+  String get jumpInRate => 'Jump-in game rate';
+
+  @override
   String get ftPerHour => 'Ft / hour';
 
   @override
   String get ftPerRoom => 'Ft / room';
+
+  @override
+  String get ftPerJumpIn => 'Ft / jump-in';
 
   @override
   String get weekStartsOn => 'Week starts on';
@@ -240,6 +246,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get search => 'Search';
+
+  @override
+  String get jumpIn => 'Jump-in game';
+
+  @override
+  String get sessionType => 'Session type';
+
+  @override
+  String get sessionTypeNormal => 'Normal';
 
   @override
   String get tapToFlap => 'Tap to flap';

@@ -32,6 +32,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
 
   double _hourlyWage = 1600.0;
   double _perRoomBonus = 600.0;
+  double _jumpInRate = 2300.0;
   int _weekStartWeekday = DateTime.monday;
   String? _localeCode;
 
@@ -48,10 +49,12 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   void _loadSavedRates() {
     final savedHourly = settingsStorage.getHourlyWage();
     final savedPerRoom = settingsStorage.getPerRoomBonus();
+    final savedJumpIn = settingsStorage.getJumpInRate();
     final savedWeekStart = settingsStorage.getWeekStartWeekday();
     final savedLocaleCode = settingsStorage.getLocaleCode();
     if (savedHourly == null &&
         savedPerRoom == null &&
+        savedJumpIn == null &&
         savedWeekStart == null &&
         savedLocaleCode == null) {
       return;
@@ -59,6 +62,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     setState(() {
       if (savedHourly != null) _hourlyWage = savedHourly;
       if (savedPerRoom != null) _perRoomBonus = savedPerRoom;
+      if (savedJumpIn != null) _jumpInRate = savedJumpIn;
       if (savedWeekStart != null) _weekStartWeekday = savedWeekStart;
       _localeCode = savedLocaleCode;
     });
@@ -292,6 +296,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           entryForDay: _entryForDay,
           hourlyWage: _hourlyWage,
           perRoomBonus: _perRoomBonus,
+          jumpInRate: _jumpInRate,
         );
       },
     );
@@ -306,7 +311,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   double _earningsForDay(DateTime day) {
     final entry = _entriesByDayKey[dayKey(day)];
     if (entry == null) return 0;
-    return entry.earnings(hourlyWage: _hourlyWage, perRoomBonus: _perRoomBonus);
+    return entry.earnings(
+      hourlyWage: _hourlyWage,
+      perRoomBonus: _perRoomBonus,
+      jumpInRate: _jumpInRate,
+    );
   }
 
   DayEntry? _entryForDay(DateTime day) => _entriesByDayKey[dayKey(day)];
@@ -357,6 +366,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialSessions: existing?.sessions ?? const [],
           hourlyWage: _hourlyWage,
           perRoomBonus: _perRoomBonus,
+          jumpInRate: _jumpInRate,
         );
       },
     );
@@ -390,10 +400,15 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     void persistSessions(List<GameSession> sessions) async {
       final current = _entriesByDayKey[key];
       final prevRooms = current?.rooms ?? 0;
-      final prevSessionsCount = current?.sessions.length ?? 0;
+      final prevNormalSessionsCount = current?.sessions
+          .where((s) => s.type == SessionType.normal)
+          .length;
       final userCustomizedRooms =
-          current != null && prevRooms != prevSessionsCount;
-      final nextRooms = userCustomizedRooms ? prevRooms : sessions.length;
+          current != null && prevRooms != prevNormalSessionsCount;
+      final normalSessionsCount = sessions
+          .where((s) => s.type == SessionType.normal)
+          .length;
+      final nextRooms = userCustomizedRooms ? prevRooms : normalSessionsCount;
       final nextHours = current?.hours ?? 0;
 
       final nextEntry = DayEntry(
@@ -454,6 +469,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         return RatesSheet(
           initialHourlyWage: _hourlyWage,
           initialPerRoomBonus: _perRoomBonus,
+          initialJumpInRate: _jumpInRate,
           initialWeekStartWeekday: _weekStartWeekday,
           initialLocaleCode: _localeCode,
         );
@@ -465,11 +481,13 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     setState(() {
       _hourlyWage = result.hourlyWage;
       _perRoomBonus = result.perRoomBonus;
+      _jumpInRate = result.jumpInRate;
       _weekStartWeekday = result.weekStartWeekday;
       _localeCode = result.localeCode;
     });
     await settingsStorage.setHourlyWage(_hourlyWage);
     await settingsStorage.setPerRoomBonus(_perRoomBonus);
+    await settingsStorage.setJumpInRate(_jumpInRate);
     await settingsStorage.setWeekStartWeekday(_weekStartWeekday);
     await appSettingsController.setLocaleCode(_localeCode);
   }

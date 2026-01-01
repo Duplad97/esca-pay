@@ -4,6 +4,7 @@ class SettingsStorage {
   static const boxName = 'settings';
   static const _hourlyWageKey = 'hourlyWage';
   static const _perRoomBonusKey = 'perRoomBonus';
+  static const _jumpInRateKey = 'jumpInRate';
   static const _weekStartWeekdayKey = 'weekStartWeekday';
   static const _localeCodeKey = 'localeCode';
   static const _bestFlappyScoreKey = 'bestFlappyScore';
@@ -23,6 +24,11 @@ class SettingsStorage {
 
   double? getPerRoomBonus() {
     final v = _box?.get(_perRoomBonusKey);
+    return (v is num) ? v.toDouble() : null;
+  }
+
+  double? getJumpInRate() {
+    final v = _box?.get(_jumpInRateKey);
     return (v is num) ? v.toDouble() : null;
   }
 
@@ -52,6 +58,10 @@ class SettingsStorage {
 
   Future<void> setPerRoomBonus(double value) async {
     await _box?.put(_perRoomBonusKey, value);
+  }
+
+  Future<void> setJumpInRate(double value) async {
+    await _box?.put(_jumpInRateKey, value);
   }
 
   Future<void> setWeekStartWeekday(int weekday) async {

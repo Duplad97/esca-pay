@@ -13,7 +13,12 @@ class DayEntry {
 
   bool get isEmpty => hours <= 0 && rooms <= 0 && sessions.isEmpty;
 
-  double earnings({required double hourlyWage, required double perRoomBonus}) {
-    return (hours * hourlyWage) + (rooms * perRoomBonus);
+  double earnings({
+    required double hourlyWage,
+    required double perRoomBonus,
+    required double jumpInRate,
+  }) {
+    final jumpInCount = sessions.where((s) => s.type == SessionType.jumpIn).length;
+    return (hours * hourlyWage) + (rooms * perRoomBonus) + (jumpInCount * jumpInRate);
   }
 }

@@ -17,6 +17,7 @@ class EditDaySheet extends StatefulWidget {
     required this.initialSessions,
     required this.hourlyWage,
     required this.perRoomBonus,
+    required this.jumpInRate,
   });
 
   final DateTime day;
@@ -25,6 +26,7 @@ class EditDaySheet extends StatefulWidget {
   final List<GameSession> initialSessions;
   final double hourlyWage;
   final double perRoomBonus;
+  final double jumpInRate;
 
   @override
   State<EditDaySheet> createState() => _EditDaySheetState();
@@ -51,10 +53,16 @@ class _EditDaySheetState extends State<EditDaySheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final earnings =
-        (_hours * widget.hourlyWage) + (_rooms * widget.perRoomBonus);
-    final sessionsCount = _sessions.length;
-    final roomsMismatch = sessionsCount > 0 && _rooms != sessionsCount;
+    final normalSessionsCount = _sessions
+        .where((s) => s.type == SessionType.normal)
+        .length;
+    final jumpInCount = _sessions
+        .where((s) => s.type == SessionType.jumpIn)
+        .length;
+    final earnings = (_hours * widget.hourlyWage) +
+        (_rooms * widget.perRoomBonus) +
+        (jumpInCount * widget.jumpInRate);
+    final roomsMismatch = normalSessionsCount > 0 && _rooms != normalSessionsCount;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -103,8 +111,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
             const SizedBox(height: 10),
             StepperRow(
               title: l10n.roomsHostedTitle,
-              subtitle: sessionsCount > 0
-                  ? l10n.roomsHostedSubtitleWithSessions(sessionsCount)
+              subtitle: normalSessionsCount > 0
+                  ? l10n.roomsHostedSubtitleWithSessions(normalSessionsCount)
                   : l10n.roomsHostedSubtitleNone,
               valueText: '$_rooms',
               onMinus: () {
@@ -118,7 +126,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
             ),
             if (roomsMismatch) ...<Widget>[
               const SizedBox(height: 8),
-              _MismatchHint(rooms: _rooms, sessions: sessionsCount),
+              _MismatchHint(rooms: _rooms, sessions: normalSessionsCount),
             ],
             const SizedBox(height: 18),
             Row(

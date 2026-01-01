@@ -5,6 +5,7 @@ import '../../../shared/utils/date_time_utils.dart';
 import '../../../shared/utils/localized_date_labels.dart';
 import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
+import '../models/game_session.dart';
 
 class SelectedDaysSummarySheet extends StatelessWidget {
   const SelectedDaysSummarySheet({
@@ -13,12 +14,14 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     required this.entryForDay,
     required this.hourlyWage,
     required this.perRoomBonus,
+    required this.jumpInRate,
   });
 
   final List<DateTime> selectedDays;
   final DayEntry? Function(DateTime day) entryForDay;
   final double hourlyWage;
   final double perRoomBonus;
+  final double jumpInRate;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +32,13 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     double totalWage = 0;
     for (final day in days) {
       final entry = entryForDay(dateOnly(day));
-      final hours = entry?.hours ?? 0;
-      final rooms = entry?.rooms ?? 0;
-      totalWage += (hours * hourlyWage) + (rooms * perRoomBonus);
+      if (entry != null) {
+        totalWage += entry.earnings(
+          hourlyWage: hourlyWage,
+          perRoomBonus: perRoomBonus,
+          jumpInRate: jumpInRate,
+        );
+      }
     }
 
     return Padding(
@@ -66,10 +73,16 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                 final entry = entryForDay(day);
                 final hours = entry?.hours ?? 0;
                 final rooms = entry?.rooms ?? 0;
+                final jumpInCount =
+                    entry?.sessions
+                        .where((s) => s.type == SessionType.jumpIn)
+                        .length ??
+                    0;
 
                 final hoursPay = hours * hourlyWage;
                 final roomsPay = rooms * perRoomBonus;
-                final total = hoursPay + roomsPay;
+                final jumpInPay = jumpInCount * jumpInRate;
+                final total = hoursPay + roomsPay + jumpInPay;
 
                 return _DayBreakdownCard(
                   title: dayTitleShortL10n(context, day),
@@ -82,6 +95,9 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                   total: total,
                   hoursLabel: l10n.hours,
                   roomsLabel: l10n.rooms,
+                  sessions: entry?.sessions ?? [],
+                  jumpInRate: jumpInRate,
+                  jumpInPay: jumpInPay,
                 );
               },
             ),
@@ -91,6 +107,8 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     );
   }
 }
+
+// ... (all other code remains the same)
 
 class _DayBreakdownCard extends StatelessWidget {
   const _DayBreakdownCard({
@@ -104,6 +122,9 @@ class _DayBreakdownCard extends StatelessWidget {
     required this.total,
     required this.hoursLabel,
     required this.roomsLabel,
+    this.sessions = const [],
+    required this.jumpInRate,
+    required this.jumpInPay,
   });
 
   final String title;
@@ -116,6 +137,9 @@ class _DayBreakdownCard extends StatelessWidget {
   final double total;
   final String hoursLabel;
   final String roomsLabel;
+  final List<GameSession> sessions;
+  final double jumpInRate;
+  final double jumpInPay;
 
   @override
   Widget build(BuildContext context) {
@@ -157,17 +181,39 @@ class _DayBreakdownCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            _Line(
-              label: hoursLabel,
-              expression:
-                  '${_formatHours(hours)} × ${money(hourlyWage)} = ${money(hoursPay)}',
-            ),
-            const SizedBox(height: 4),
-            _Line(
-              label: roomsLabel,
-              expression:
-                  '$rooms × ${money(perRoomBonus)} = ${money(roomsPay)}',
+            if (hours > 0) const SizedBox(height: 8),
+            if (hours > 0)
+              _Line(
+                label: hoursLabel,
+                expression:
+                    '${_formatHours(hours)} × ${money(hourlyWage)} = ${money(hoursPay)}',
+              ),
+            if (rooms > 0) const SizedBox(height: 4),
+            if (rooms > 0)
+              _Line(
+                label: roomsLabel,
+                expression:
+                    '$rooms × ${money(perRoomBonus)} = ${money(roomsPay)}',
+              ),
+            // Insert jump-in game summary line
+            Builder(
+              builder: (BuildContext context) {
+                final l10n = AppLocalizations.of(context)!;
+                // Count jump-in games from sessions
+                final jumpInCount = sessions
+                    .where((s) => s.type == SessionType.jumpIn)
+                    .length;
+                return jumpInCount > 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: _Line(
+                          label: l10n.jumpIn,
+                          expression:
+                              '$jumpInCount × ${money(jumpInRate)} = ${money(jumpInPay)}',
+                        ),
+                      )
+                    : SizedBox.shrink();
+              },
             ),
           ],
         ),

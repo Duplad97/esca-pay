@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Per-room bonus'**
   String get perRoomBonus;
 
+  /// No description provided for @jumpInRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump-in game rate'**
+  String get jumpInRate;
+
   /// No description provided for @ftPerHour.
   ///
   /// In en, this message translates to:
@@ -169,6 +175,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ft / room'**
   String get ftPerRoom;
+
+  /// No description provided for @ftPerJumpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ft / jump-in'**
+  String get ftPerJumpIn;
 
   /// No description provided for @weekStartsOn.
   ///
@@ -523,6 +535,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search'**
   String get search;
+
+  /// No description provided for @jumpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump-in game'**
+  String get jumpIn;
+
+  /// No description provided for @sessionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Session type'**
+  String get sessionType;
+
+  /// No description provided for @sessionTypeNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get sessionTypeNormal;
 
   /// No description provided for @tapToFlap.
   ///

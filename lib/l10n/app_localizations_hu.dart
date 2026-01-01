@@ -39,10 +39,16 @@ class AppLocalizationsHu extends AppLocalizations {
   String get perRoomBonus => 'Szobánkénti bónusz';
 
   @override
+  String get jumpInRate => 'Beugró játék díja';
+
+  @override
   String get ftPerHour => 'Ft / óra';
 
   @override
   String get ftPerRoom => 'Ft / szoba';
+
+  @override
+  String get ftPerJumpIn => 'Ft / beugró';
 
   @override
   String get weekStartsOn => 'A hét kezdete';
@@ -241,6 +247,15 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get search => 'Keresés';
+
+  @override
+  String get jumpIn => 'Beugró';
+
+  @override
+  String get sessionType => 'Játék típusa';
+
+  @override
+  String get sessionTypeNormal => 'Normál';
 
   @override
   String get tapToFlap => 'Koppints a repüléshez';
