@@ -1,3 +1,4 @@
+import 'package:esca_pay/shared/themes/theme_manager.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -14,12 +15,14 @@ class TopBar extends StatelessWidget {
     required this.onPrevMonth,
     required this.onNextMonth,
     required this.onRates,
+    required this.onTheme,
   });
 
   final DateTime month;
   final VoidCallback onPrevMonth;
   final VoidCallback onNextMonth;
   final VoidCallback onRates;
+  final VoidCallback onTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +59,15 @@ class TopBar extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  IconButton.filledTonal(
+                    tooltip: l10n.themesTooltip,
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      onTheme();
+                    },
+                    icon: const Icon(Icons.palette),
+                  ),
+                  const SizedBox(width: 8),
                   IconButton.filledTonal(
                     tooltip: l10n.settingsTooltip,
                     onPressed: () {
@@ -199,7 +211,7 @@ class _EasterEggLogoState extends State<_EasterEggLogo>
             );
           },
           child: Image.asset(
-            'lib/assets/logo.png',
+            themeManager.currentTheme.logo,
             height: 30,
             fit: BoxFit.contain,
           ),

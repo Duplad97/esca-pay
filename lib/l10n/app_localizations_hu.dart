@@ -69,6 +69,18 @@ class AppLocalizationsHu extends AppLocalizations {
   String get languageHungarian => 'Magyar';
 
   @override
+  String get themesTooltip => 'Témák';
+
+  @override
+  String get theme_default => 'Alapértelmezett';
+
+  @override
+  String get theme_girly => 'Rózsaszín';
+
+  @override
+  String get theme_boy => 'Kék';
+
+  @override
   String get previousMonthTooltip => 'Előző hónap';
 
   @override

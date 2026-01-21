@@ -1,3 +1,4 @@
+import 'package:esca_pay/shared/themes/theme_manager.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -96,7 +97,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(28),
                                 child: Image.asset(
-                                  'lib/assets/splash_logo.png',
+                                  themeManager.currentTheme.splashLogo,
                                   width: 160,
                                   height: 160,
                                   fit: BoxFit.cover,
@@ -126,6 +127,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     );
   }
 }
+
 
 class _SplashBackground extends StatefulWidget {
   const _SplashBackground();

@@ -20,17 +20,22 @@
   "languageSystem": "Rendszer",
   "languageEnglish": "Angol",
   "languageHungarian": "Magyar",
+
+  "themesTooltip": "Témák",
+  "theme_default": "Alapértelmezett",
+  "theme_girly": "Rózsaszín",
+  "theme_boy": "Kék",
+
   "previousMonthTooltip": "Előző hónap",
   "nextMonthTooltip": "Következő hónap",
+
   "today": "Ma",
   "select": "Kijelölés",
   "summary": "Összegzés",
   "selectedCount": "{count} kijelölve",
   "@selectedCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "weekly": "Heti",

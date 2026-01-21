@@ -23,6 +23,11 @@
   "languageEnglish": "English",
   "languageHungarian": "Hungarian",
 
+  "themesTooltip": "Themes",
+  "theme_default": "Default",
+  "theme_girly": "Pink",
+  "theme_boy": "Blue",
+
   "previousMonthTooltip": "Previous month",
   "nextMonthTooltip": "Next month",
 

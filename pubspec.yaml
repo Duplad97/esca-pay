@@ -1,7 +1,7 @@
 name: esca_pay
 description: "A new Flutter project."
-publish_to: 'none'
-version: 0.1.0
+publish_to: "none"
+version: 1.0.0
 
 environment:
   sdk: ^3.10.3
@@ -15,6 +15,8 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.20.2
   path_provider: ^2.1.5
+  shared_preferences: ^2.2.3
+  flutter_dynamic_icon: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +34,6 @@ flutter:
   generate: true
   assets:
     - lib/assets/
+    - lib/assets/themes/default/
+    - lib/assets/themes/girly/
+    - lib/assets/themes/boy/

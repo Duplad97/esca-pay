@@ -218,6 +218,30 @@ abstract class AppLocalizations {
   /// **'Hungarian'**
   String get languageHungarian;
 
+  /// No description provided for @themesTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get themesTooltip;
+
+  /// No description provided for @theme_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get theme_default;
+
+  /// No description provided for @theme_girly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get theme_girly;
+
+  /// No description provided for @theme_boy.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get theme_boy;
+
   /// No description provided for @previousMonthTooltip.
   ///
   /// In en, this message translates to:

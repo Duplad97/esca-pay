@@ -1,3 +1,4 @@
+import 'package:esca_pay/features/theme_selector/theme_selector_page.dart';
 import 'package:flutter/material.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 
@@ -119,6 +120,13 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                   );
                 }),
                 onRates: () => _openRatesSheet(context),
+                onTheme: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ThemeSelectorPage(),
+                    ),
+                  );
+                },
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 220),

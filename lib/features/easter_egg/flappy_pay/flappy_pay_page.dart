@@ -1,3 +1,4 @@
+import 'package:esca_pay/shared/themes/theme_manager.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -262,7 +263,7 @@ class _FlappyPayPageState extends State<FlappyPayPage>
                       child: Transform.rotate(
                         angle: (_birdV * 0.9).clamp(-0.7, 0.7),
                         child: Image.asset(
-                          'lib/assets/character.png',
+                          themeManager.currentTheme.character,
                           fit: BoxFit.contain,
                         ),
                       ),

@@ -13,6 +13,14 @@ final List<String> roomNames = List<String>.unmodifiable(
     'A fáraó sírja II.',
     'A Tengeralattjáró',
     'Az időgép',
+    'UFO: A sötét invázió',
+    'A rettegés háza',
+    'Az elveszett kristálykoponya',
+    'A boszorkány',
+    'Mesterséges Intelligencia',
+    'A gyűrű',
+    'JumpRare',
+    'Quizy!',
   ]..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase())),
 );
 

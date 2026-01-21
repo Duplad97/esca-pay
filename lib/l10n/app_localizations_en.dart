@@ -69,6 +69,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageHungarian => 'Hungarian';
 
   @override
+  String get themesTooltip => 'Themes';
+
+  @override
+  String get theme_default => 'Default';
+
+  @override
+  String get theme_girly => 'Pink';
+
+  @override
+  String get theme_boy => 'Blue';
+
+  @override
   String get previousMonthTooltip => 'Previous month';
 
   @override
