@@ -13,9 +13,11 @@
   "hourlyWage": "Hourly wage",
   "perRoomBonus": "Per-room bonus",
   "jumpInRate": "Jump-in game rate",
+  "eventFine": "Event bonus",
   "ftPerHour": "Ft / hour",
   "ftPerRoom": "Ft / room",
   "ftPerJumpIn": "Ft / jump-in",
+  "ftPerEvent": "Ft / event",
   "weekStartsOn": "Week starts on",
   "usedForWeeklyTotals": "Used for weekly totals",
   "language": "Language",
@@ -45,13 +47,22 @@
   "monthly": "Monthly",
 
   "selectedDay": "Selected day",
+  "dayShort": "Day",
   "previousDayTooltip": "Previous day",
   "nextDayTooltip": "Next day",
   "hoursRoomsLine": "Hours: {hours} • Rooms: {rooms}",
+  "hoursRoomsEventsLine": "Hours: {hours} • Rooms: {rooms} • Events: {events}",
   "@hoursRoomsLine": {
     "placeholders": {
       "hours": { "type": "String" },
       "rooms": { "type": "int" }
+    }
+  },
+  "@hoursRoomsEventsLine": {
+    "placeholders": {
+      "hours": { "type": "String" },
+      "rooms": { "type": "int" },
+      "events": { "type": "int" }
     }
   },
   "noEntryYetHint": "No entry yet — long-press a day to edit",
@@ -76,6 +87,10 @@
   "roomsHostedTitle": "Rooms hosted",
   "roomsHostedSubtitleNone": "rooms ran today",
   "roomsHostedSubtitleWithSessions": "sessions saved: {count}",
+  "eventsToday": "Events today: {count}",
+  "@eventsToday": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "@roomsHostedSubtitleWithSessions": {
     "placeholders": { "count": { "type": "int" } }
   },
@@ -99,9 +114,13 @@
   },
   "hours": "Hours",
   "rooms": "Rooms",
+  "events": "Events",
+  "eventsSheetEmpty": "No events yet.\nTap “Add event”.",
+  "selectEventTime": "Select Event Time",
 
   "sessionsSheetEmpty": "No sessions yet.\nTap “Add session”.",
   "addSession": "Add session",
+  "addEvent": "Add event",
   "saveSession": "Save session",
   "sessionNumber": "Session #{number}",
   "@sessionNumber": {

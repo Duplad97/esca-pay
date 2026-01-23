@@ -5,6 +5,7 @@ import 'package:esca_pay/l10n/app_localizations.dart';
 import '../../../shared/utils/localized_date_labels.dart';
 import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
+import '../models/event.dart';
 import '../models/game_session.dart';
 import 'stepper_row.dart';
 import 'time_picker_row.dart';
@@ -16,18 +17,22 @@ class EditDaySheet extends StatefulWidget {
     required this.initialHours,
     required this.initialRooms,
     required this.initialSessions,
+    required this.initialEvents,
     required this.hourlyWage,
     required this.perRoomBonus,
     required this.jumpInRate,
+    required this.eventFine,
   });
 
   final DateTime day;
   final double initialHours;
   final int initialRooms;
   final List<GameSession> initialSessions;
+  final List<Event> initialEvents;
   final double hourlyWage;
   final double perRoomBonus;
   final double jumpInRate;
+  final double eventFine;
 
   @override
   State<EditDaySheet> createState() => _EditDaySheetState();
@@ -37,6 +42,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
   late double _hours;
   late int _rooms;
   late List<GameSession> _sessions;
+  late List<Event> _events;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
 
@@ -46,6 +52,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
     _hours = widget.initialHours;
     _rooms = widget.initialRooms;
     _sessions = widget.initialSessions.toList(growable: true);
+    _events = widget.initialEvents.toList(growable: true);
     _startTime = const TimeOfDay(hour: 8, minute: 30);
     _endTime = const TimeOfDay(hour: 16, minute: 0);
   }
@@ -76,7 +83,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
     final earnings =
         (_hours * widget.hourlyWage) +
         (_rooms * widget.perRoomBonus) +
-        (jumpInCount * widget.jumpInRate);
+        (jumpInCount * widget.jumpInRate) +
+        (_events.length * widget.eventFine);
     final roomsMismatch =
         normalSessionsCount > 0 && _rooms != normalSessionsCount;
 
@@ -138,6 +146,29 @@ class _EditDaySheetState extends State<EditDaySheet> {
             ],
             const SizedBox(height: 18),
             StepperRow(
+              title: l10n.events,
+              subtitle: l10n.eventsToday(_events.length),
+              valueText: '${_events.length}',
+              onMinus: _events.isEmpty
+                  ? () {}
+                  : () {
+                      HapticFeedback.selectionClick();
+                      setState(() => _events.removeAt(_events.length - 1));
+                    },
+              onPlus: () {
+                HapticFeedback.selectionClick();
+                setState(
+                  () => _events.add(
+                    Event(
+                      start: const TimeOfDay(hour: 18, minute: 0),
+                      end: const TimeOfDay(hour: 19, minute: 0),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 18),
+            StepperRow(
               title: l10n.roomsHostedTitle,
               subtitle: normalSessionsCount > 0
                   ? l10n.roomsHostedSubtitleWithSessions(normalSessionsCount)
@@ -167,6 +198,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         hours: 0,
                         rooms: 0,
                         sessions: <GameSession>[],
+                        events: <Event>[],
                       ),
                     );
                   },
@@ -182,6 +214,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         hours: _hours,
                         rooms: _rooms,
                         sessions: _sessions,
+                        events: _events,
                         startTime: _startTime,
                         endTime: _endTime,
                       ),

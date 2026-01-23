@@ -12,6 +12,7 @@ class RatesSheet extends StatefulWidget {
     required this.initialHourlyWage,
     required this.initialPerRoomBonus,
     required this.initialJumpInRate,
+    required this.initialEventFine,
     required this.initialWeekStartWeekday,
     required this.initialLocaleCode,
   });
@@ -19,6 +20,7 @@ class RatesSheet extends StatefulWidget {
   final double initialHourlyWage;
   final double initialPerRoomBonus;
   final double initialJumpInRate;
+  final double initialEventFine;
   final int initialWeekStartWeekday;
   final String? initialLocaleCode;
 
@@ -30,6 +32,7 @@ class _RatesSheetState extends State<RatesSheet> {
   late final TextEditingController _wageController;
   late final TextEditingController _bonusController;
   late final TextEditingController _jumpInRateController;
+  late final TextEditingController _eventFineController;
   late int _weekStartWeekday;
   late String? _localeCode;
 
@@ -45,6 +48,9 @@ class _RatesSheetState extends State<RatesSheet> {
     _jumpInRateController = TextEditingController(
       text: widget.initialJumpInRate.toStringAsFixed(0),
     );
+    _eventFineController = TextEditingController(
+      text: widget.initialEventFine.toStringAsFixed(0),
+    );
     _weekStartWeekday = widget.initialWeekStartWeekday;
     _localeCode = widget.initialLocaleCode;
   }
@@ -54,6 +60,7 @@ class _RatesSheetState extends State<RatesSheet> {
     _wageController.dispose();
     _bonusController.dispose();
     _jumpInRateController.dispose();
+    _eventFineController.dispose();
     super.dispose();
   }
 
@@ -123,6 +130,12 @@ class _RatesSheetState extends State<RatesSheet> {
                       helper: l10n.ftPerJumpIn,
                       onChanged: (_) {},
                     ),
+                    MoneyField(
+                      controller: _eventFineController,
+                      label: l10n.eventFine,
+                      helper: l10n.ftPerEvent,
+                      onChanged: (_) {},
+                    ),
                   ];
 
                   if (!isWide) {
@@ -133,6 +146,8 @@ class _RatesSheetState extends State<RatesSheet> {
                         children[1],
                         SizedBox(height: gap),
                         children[2],
+                        SizedBox(height: gap),
+                        children[3],
                       ],
                     );
                   }
@@ -147,7 +162,13 @@ class _RatesSheetState extends State<RatesSheet> {
                         ],
                       ),
                       SizedBox(height: gap),
-                      children[2],
+                      Row(
+                        children: <Widget>[
+                          Expanded(child: children[2]),
+                          SizedBox(width: gap),
+                          Expanded(child: children[3]),
+                        ],
+                      ),
                     ],
                   );
                 },
@@ -219,7 +240,13 @@ class _RatesSheetState extends State<RatesSheet> {
                   final jumpIn = double.tryParse(
                     _jumpInRateController.text.trim(),
                   );
-                  if (hourly == null || perRoom == null || jumpIn == null) {
+                  final eventFine = double.tryParse(
+                    _eventFineController.text.trim(),
+                  );
+                  if (hourly == null ||
+                      perRoom == null ||
+                      jumpIn == null ||
+                      eventFine == null) {
                     return;
                   }
                   Navigator.of(context).pop(
@@ -227,6 +254,7 @@ class _RatesSheetState extends State<RatesSheet> {
                       hourlyWage: hourly,
                       perRoomBonus: perRoom,
                       jumpInRate: jumpIn,
+                      eventFine: eventFine,
                       weekStartWeekday: _weekStartWeekday,
                       localeCode: _localeCode,
                     ),

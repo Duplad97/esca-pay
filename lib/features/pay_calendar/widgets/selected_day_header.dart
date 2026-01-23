@@ -16,6 +16,7 @@ class SelectedDayHeader extends StatelessWidget {
     required this.onPrevDay,
     required this.onNextDay,
     required this.onEditSessions,
+    required this.onEditEvents,
     required this.onEditDay,
   });
 
@@ -25,6 +26,7 @@ class SelectedDayHeader extends StatelessWidget {
   final VoidCallback onPrevDay;
   final VoidCallback onNextDay;
   final VoidCallback onEditSessions;
+  final VoidCallback onEditEvents;
   final VoidCallback onEditDay;
 
   @override
@@ -33,6 +35,7 @@ class SelectedDayHeader extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final hours = entry?.hours ?? 0;
     final rooms = entry?.rooms ?? 0;
+    final events = entry?.events.length ?? 0;
     final hasEntry = !(entry == null || entry!.isEmpty);
 
     return DecoratedBox(
@@ -109,7 +112,11 @@ class SelectedDayHeader extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               hasEntry
-                  ? l10n.hoursRoomsLine(_formatHours(hours), rooms)
+                  ? l10n.hoursRoomsEventsLine(
+                      _formatHours(hours),
+                      rooms,
+                      events,
+                    )
                   : l10n.noEntryYetHint,
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -119,32 +126,56 @@ class SelectedDayHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _ActionButton(
-                    tonal: true,
-                    icon: Icons.badge,
-                    label: l10n.sessions,
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      onEditSessions();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _ActionButton(
-                    tonal: false,
-                    icon: Icons.edit,
-                    label: l10n.editDay,
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      onEditDay();
-                    },
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isTight = constraints.maxWidth < 360;
+                return Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 2,
+                      child: _ActionButton(
+                        tonal: true,
+                        icon: Icons.badge,
+                        label: l10n.sessions,
+                        condensed: isTight,
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          onEditSessions();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 2,
+                      child: _ActionButton(
+                        tonal: true,
+                        icon: Icons.event,
+                        label: l10n.events,
+                        condensed: isTight,
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          onEditEvents();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 1,
+                      child: _ActionButton(
+                        tonal: false,
+                        icon: Icons.edit,
+                        label: l10n.dayShort,
+                        condensed: isTight,
+                        compact: true,
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          onEditDay();
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -164,31 +195,48 @@ class _ActionButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onPressed,
+    this.condensed = false,
+    this.compact = false,
   });
 
   final bool tonal;
   final IconData icon;
   final String label;
   final VoidCallback onPressed;
+  final bool condensed;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final style = FilledButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? (condensed ? 8 : 12) : (condensed ? 8 : 10),
+        vertical: (condensed ? 6 : 8),
+      ),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      minimumSize: const Size(0, 44),
+      minimumSize: Size(0, (condensed ? 36 : 40)),
     );
 
     final child = Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(icon, size: 18),
-        const SizedBox(width: 8),
-        Expanded(
+        Icon(icon, size: (condensed ? 14 : 16)),
+        const SizedBox(width: 6),
+        Flexible(
           child: FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.center,
-            child: Text(label, maxLines: 1),
+            child: Text(
+              label,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: tonal ? cs.onSurface : cs.onPrimary,
+              ),
+            ),
           ),
         ),
       ],

@@ -42,6 +42,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get jumpInRate => 'Beugró játék díja';
 
   @override
+  String get eventFine => 'Rendezvény bónusz';
+
+  @override
   String get ftPerHour => 'Ft / óra';
 
   @override
@@ -49,6 +52,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get ftPerJumpIn => 'Ft / beugró';
+
+  @override
+  String get ftPerEvent => 'Ft / rendezvény';
 
   @override
   String get weekStartsOn => 'A hét kezdete';
@@ -110,6 +116,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get selectedDay => 'Kiválasztott nap';
 
   @override
+  String get dayShort => 'Nap';
+
+  @override
   String get previousDayTooltip => 'Előző nap';
 
   @override
@@ -118,6 +127,11 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String hoursRoomsLine(String hours, int rooms) {
     return 'Óra: $hours • Szoba: $rooms';
+  }
+
+  @override
+  String hoursRoomsEventsLine(String hours, int rooms, int events) {
+    return 'Óra: $hours • Szoba: $rooms • Rendezvény: $events';
   }
 
   @override
@@ -173,6 +187,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String eventsToday(int count) {
+    return 'Rendezvények ma: $count';
+  }
+
+  @override
   String roomsSessionsMismatch(int sessions, int rooms) {
     return 'Figyi: játékok ($sessions) ≠ szobák ($rooms).';
   }
@@ -210,11 +229,24 @@ class AppLocalizationsHu extends AppLocalizations {
   String get rooms => 'Szoba';
 
   @override
+  String get events => 'Rendezvények';
+
+  @override
+  String get eventsSheetEmpty =>
+      'Még nincs Rendezvény.\nNyomd meg: \"Rendezvény hozzáadása\".';
+
+  @override
+  String get selectEventTime => 'Rendezvény időpontjának megadása';
+
+  @override
   String get sessionsSheetEmpty =>
       'Még nincs Játék.\nNyomd meg: „Játék hozzáadása”.';
 
   @override
   String get addSession => 'Játék hozzáadása';
+
+  @override
+  String get addEvent => 'Rendezvény hozzáadása';
 
   @override
   String get saveSession => 'Játék mentése';

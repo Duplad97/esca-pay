@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Jump-in game rate'**
   String get jumpInRate;
 
+  /// No description provided for @eventFine.
+  ///
+  /// In en, this message translates to:
+  /// **'Event bonus'**
+  String get eventFine;
+
   /// No description provided for @ftPerHour.
   ///
   /// In en, this message translates to:
@@ -181,6 +187,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ft / jump-in'**
   String get ftPerJumpIn;
+
+  /// No description provided for @ftPerEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Ft / event'**
+  String get ftPerEvent;
 
   /// No description provided for @weekStartsOn.
   ///
@@ -296,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Selected day'**
   String get selectedDay;
 
+  /// No description provided for @dayShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get dayShort;
+
   /// No description provided for @previousDayTooltip.
   ///
   /// In en, this message translates to:
@@ -313,6 +331,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hours: {hours} • Rooms: {rooms}'**
   String hoursRoomsLine(String hours, int rooms);
+
+  /// No description provided for @hoursRoomsEventsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours: {hours} • Rooms: {rooms} • Events: {events}'**
+  String hoursRoomsEventsLine(String hours, int rooms, int events);
 
   /// No description provided for @noEntryYetHint.
   ///
@@ -410,6 +434,12 @@ abstract class AppLocalizations {
   /// **'sessions saved: {count}'**
   String roomsHostedSubtitleWithSessions(int count);
 
+  /// No description provided for @eventsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Events today: {count}'**
+  String eventsToday(int count);
+
   /// No description provided for @roomsSessionsMismatch.
   ///
   /// In en, this message translates to:
@@ -464,6 +494,24 @@ abstract class AppLocalizations {
   /// **'Rooms'**
   String get rooms;
 
+  /// No description provided for @events.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get events;
+
+  /// No description provided for @eventsSheetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No events yet.\nTap “Add event”.'**
+  String get eventsSheetEmpty;
+
+  /// No description provided for @selectEventTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Event Time'**
+  String get selectEventTime;
+
   /// No description provided for @sessionsSheetEmpty.
   ///
   /// In en, this message translates to:
@@ -475,6 +523,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add session'**
   String get addSession;
+
+  /// No description provided for @addEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Add event'**
+  String get addEvent;
 
   /// No description provided for @saveSession.
   ///

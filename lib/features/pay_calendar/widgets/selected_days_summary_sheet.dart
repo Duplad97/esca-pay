@@ -15,6 +15,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     required this.hourlyWage,
     required this.perRoomBonus,
     required this.jumpInRate,
+    required this.eventFine,
   });
 
   final List<DateTime> selectedDays;
@@ -22,6 +23,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
   final double hourlyWage;
   final double perRoomBonus;
   final double jumpInRate;
+  final double eventFine;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
           hourlyWage: hourlyWage,
           perRoomBonus: perRoomBonus,
           jumpInRate: jumpInRate,
+          eventFine: eventFine,
         );
       }
     }
@@ -78,11 +81,13 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                         .where((s) => s.type == SessionType.jumpIn)
                         .length ??
                     0;
+                final eventCount = entry?.events.length ?? 0;
 
                 final hoursPay = hours * hourlyWage;
                 final roomsPay = rooms * perRoomBonus;
                 final jumpInPay = jumpInCount * jumpInRate;
-                final total = hoursPay + roomsPay + jumpInPay;
+                final eventsBonus = eventCount * eventFine;
+                final total = hoursPay + roomsPay + jumpInPay + eventsBonus;
 
                 return _DayBreakdownCard(
                   title: dayTitleShortL10n(context, day),
@@ -98,6 +103,10 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                   sessions: entry?.sessions ?? [],
                   jumpInRate: jumpInRate,
                   jumpInPay: jumpInPay,
+                  eventsLabel: l10n.events,
+                  eventCount: eventCount,
+                  eventsBonus: eventsBonus,
+                  eventFine: eventFine,
                 );
               },
             ),
@@ -125,6 +134,10 @@ class _DayBreakdownCard extends StatelessWidget {
     this.sessions = const [],
     required this.jumpInRate,
     required this.jumpInPay,
+    required this.eventsLabel,
+    required this.eventCount,
+    required this.eventsBonus,
+    required this.eventFine,
   });
 
   final String title;
@@ -140,6 +153,10 @@ class _DayBreakdownCard extends StatelessWidget {
   final List<GameSession> sessions;
   final double jumpInRate;
   final double jumpInPay;
+  final String eventsLabel;
+  final int eventCount;
+  final double eventsBonus;
+  final double eventFine;
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +232,15 @@ class _DayBreakdownCard extends StatelessWidget {
                     : SizedBox.shrink();
               },
             ),
+            if (eventCount > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: _Line(
+                  label: eventsLabel,
+                  expression:
+                      '$eventCount × ${money(eventFine)} = ${money(eventsBonus)}',
+                ),
+              ),
           ],
         ),
       ),

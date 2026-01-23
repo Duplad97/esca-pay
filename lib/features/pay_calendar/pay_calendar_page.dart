@@ -9,10 +9,12 @@ import '../../app/app_settings_controller.dart';
 import '../../shared/utils/date_time_utils.dart';
 import '../../shared/utils/localized_date_labels.dart';
 import 'models/day_entry.dart';
+import 'models/event.dart';
 import 'models/game_session.dart';
 import 'models/rates.dart';
 import 'widgets/calendar_grid.dart';
 import 'widgets/edit_day_sheet.dart';
+import 'widgets/edit_events_sheet.dart';
 import 'widgets/edit_sessions_sheet.dart';
 import 'widgets/rates_sheet.dart';
 import 'widgets/summary_card.dart';
@@ -36,6 +38,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   double _hourlyWage = 1600.0;
   double _perRoomBonus = 600.0;
   double _jumpInRate = 2300.0;
+  double _eventFine = 5000.0;
   int _weekStartWeekday = DateTime.monday;
   String? _localeCode;
 
@@ -53,11 +56,13 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     final savedHourly = settingsStorage.getHourlyWage();
     final savedPerRoom = settingsStorage.getPerRoomBonus();
     final savedJumpIn = settingsStorage.getJumpInRate();
+    final savedEventFine = settingsStorage.getEventFine();
     final savedWeekStart = settingsStorage.getWeekStartWeekday();
     final savedLocaleCode = settingsStorage.getLocaleCode();
     if (savedHourly == null &&
         savedPerRoom == null &&
         savedJumpIn == null &&
+        savedEventFine == null &&
         savedWeekStart == null &&
         savedLocaleCode == null) {
       return;
@@ -66,6 +71,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       if (savedHourly != null) _hourlyWage = savedHourly;
       if (savedPerRoom != null) _perRoomBonus = savedPerRoom;
       if (savedJumpIn != null) _jumpInRate = savedJumpIn;
+      if (savedEventFine != null) _eventFine = savedEventFine;
       if (savedWeekStart != null) _weekStartWeekday = savedWeekStart;
       _localeCode = savedLocaleCode;
     });
@@ -80,6 +86,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           hours: entry.value.hours,
           rooms: entry.value.rooms,
           sessions: entry.value.sessions,
+          events: entry.value.events,
         );
       }
     });
@@ -177,6 +184,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                               ),
                               onEditSessions: () =>
                                   _openSessionsSheet(context, _selectedDay),
+                              onEditEvents: () =>
+                                  _openEventsSheet(context, _selectedDay),
                               onEditDay: () => _openEditSheet(
                                 context,
                                 _selectedDay,
@@ -305,6 +314,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           hourlyWage: _hourlyWage,
           perRoomBonus: _perRoomBonus,
           jumpInRate: _jumpInRate,
+          eventFine: _eventFine,
         );
       },
     );
@@ -323,6 +333,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       hourlyWage: _hourlyWage,
       perRoomBonus: _perRoomBonus,
       jumpInRate: _jumpInRate,
+      eventFine: _eventFine,
     );
   }
 
@@ -372,9 +383,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialHours: existing?.hours ?? 0,
           initialRooms: existing?.rooms ?? 0,
           initialSessions: existing?.sessions ?? const [],
+          initialEvents: existing?.events ?? const [],
           hourlyWage: _hourlyWage,
           perRoomBonus: _perRoomBonus,
           jumpInRate: _jumpInRate,
+          eventFine: _eventFine,
         );
       },
     );
@@ -397,6 +410,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       hours: result.hours,
       rooms: result.rooms,
       sessions: result.sessions,
+      events: result.events,
     );
   }
 
@@ -423,6 +437,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         hours: nextHours,
         rooms: nextRooms,
         sessions: sessions,
+        events: current?.events ?? const [],
       );
 
       if (!mounted) return;
@@ -442,6 +457,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         hours: nextEntry.hours,
         rooms: nextEntry.rooms,
         sessions: nextEntry.sessions,
+        events: nextEntry.events,
       );
     }
 
@@ -463,6 +479,61 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     );
   }
 
+  Future<void> _openEventsSheet(BuildContext context, DateTime day) async {
+    final key = dayKey(day);
+    final existing = _entriesByDayKey[key];
+    final initial = existing?.events ?? const <Event>[];
+
+    void persistEvents(List<Event> events) async {
+      final current = _entriesByDayKey[key];
+      final nextEntry = DayEntry(
+        hours: current?.hours ?? 0,
+        rooms: current?.rooms ?? 0,
+        sessions: current?.sessions ?? const [],
+        events: events,
+        startTime: current?.startTime,
+        endTime: current?.endTime,
+      );
+
+      if (!mounted) return;
+      if (nextEntry.isEmpty) {
+        setState(() {
+          _entriesByDayKey.remove(key);
+        });
+        await dayEntriesStorage.deleteEntry(key);
+        return;
+      }
+
+      setState(() {
+        _entriesByDayKey[key] = nextEntry;
+      });
+      await dayEntriesStorage.setEntry(
+        dayKey: key,
+        hours: nextEntry.hours,
+        rooms: nextEntry.rooms,
+        sessions: nextEntry.sessions,
+        events: nextEntry.events,
+      );
+    }
+
+    await showModalBottomSheet<List<Event>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return EditEventsSheet(initialEvents: initial, eventFine: _eventFine);
+      },
+    ).then((value) {
+      if (value == null) return;
+      persistEvents(value);
+    });
+  }
+
   Future<void> _openRatesSheet(BuildContext context) async {
     final result = await showModalBottomSheet(
       context: context,
@@ -478,6 +549,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialHourlyWage: _hourlyWage,
           initialPerRoomBonus: _perRoomBonus,
           initialJumpInRate: _jumpInRate,
+          initialEventFine: _eventFine,
           initialWeekStartWeekday: _weekStartWeekday,
           initialLocaleCode: _localeCode,
         );
@@ -490,12 +562,14 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       _hourlyWage = result.hourlyWage;
       _perRoomBonus = result.perRoomBonus;
       _jumpInRate = result.jumpInRate;
+      _eventFine = result.eventFine;
       _weekStartWeekday = result.weekStartWeekday;
       _localeCode = result.localeCode;
     });
     await settingsStorage.setHourlyWage(_hourlyWage);
     await settingsStorage.setPerRoomBonus(_perRoomBonus);
     await settingsStorage.setJumpInRate(_jumpInRate);
+    await settingsStorage.setEventFine(_eventFine);
     await settingsStorage.setWeekStartWeekday(_weekStartWeekday);
     await appSettingsController.setLocaleCode(_localeCode);
   }

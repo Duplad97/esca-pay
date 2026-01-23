@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 
+import '../../features/pay_calendar/models/event.dart';
 import '../../features/pay_calendar/models/game_session.dart';
 
 class StoredDayEntry {
@@ -7,11 +8,13 @@ class StoredDayEntry {
     required this.hours,
     required this.rooms,
     required this.sessions,
+    required this.events,
   });
 
   final double hours;
   final int rooms;
   final List<GameSession> sessions;
+  final List<Event> events;
 }
 
 class DayEntriesStorage {
@@ -40,9 +43,17 @@ class DayEntriesStorage {
       final hours = hoursRaw.toDouble();
       final rooms = roomsRaw.toInt();
       final sessions = _parseSessions(v['sessions']);
-      if (hours <= 0 && rooms <= 0 && sessions.isEmpty) continue;
+      final events = _parseEvents(v['events']);
+      if (hours <= 0 && rooms <= 0 && sessions.isEmpty && events.isEmpty) {
+        continue;
+      }
 
-      result[k] = StoredDayEntry(hours: hours, rooms: rooms, sessions: sessions);
+      result[k] = StoredDayEntry(
+        hours: hours,
+        rooms: rooms,
+        sessions: sessions,
+        events: events,
+      );
     }
     return result;
   }
@@ -52,11 +63,13 @@ class DayEntriesStorage {
     required double hours,
     required int rooms,
     required List<GameSession> sessions,
+    required List<Event> events,
   }) async {
     await _box?.put(dayKey, <String, dynamic>{
       'hours': hours,
       'rooms': rooms,
       'sessions': sessions.map((s) => s.toJson()).toList(growable: false),
+      'events': events.map((e) => e.toJson()).toList(growable: false),
     });
   }
 
@@ -72,5 +85,15 @@ class DayEntriesStorage {
       if (s != null) sessions.add(s);
     }
     return sessions;
+  }
+
+  List<Event> _parseEvents(dynamic raw) {
+    if (raw is! List) return const <Event>[];
+    final events = <Event>[];
+    for (final item in raw) {
+      final e = Event.fromJson(item);
+      if (e != null) events.add(e);
+    }
+    return events;
   }
 }

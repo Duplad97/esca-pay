@@ -11,9 +11,11 @@
   "hourlyWage": "Órabér",
   "perRoomBonus": "Szobánkénti bónusz",
   "jumpInRate": "Beugró játék díja",
+  "eventFine": "Rendezvény bónusz",
   "ftPerHour": "Ft / óra",
   "ftPerRoom": "Ft / szoba",
   "ftPerJumpIn": "Ft / beugró",
+  "ftPerEvent": "Ft / rendezvény",
   "weekStartsOn": "A hét kezdete",
   "usedForWeeklyTotals": "Heti összesítéshez",
   "language": "Nyelv",
@@ -41,15 +43,30 @@
   "weekly": "Heti",
   "monthly": "Havi",
   "selectedDay": "Kiválasztott nap",
+  "dayShort": "Nap",
   "previousDayTooltip": "Előző nap",
   "nextDayTooltip": "Következő nap",
   "hoursRoomsLine": "Óra: {hours} • Szoba: {rooms}",
+  "hoursRoomsEventsLine": "Óra: {hours} • Szoba: {rooms} • Rendezvény: {events}",
   "@hoursRoomsLine": {
     "placeholders": {
       "hours": {
         "type": "String"
       },
       "rooms": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursRoomsEventsLine": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "rooms": {
+        "type": "int"
+      },
+      "events": {
         "type": "int"
       }
     }
@@ -75,6 +92,14 @@
   "roomsHostedTitle": "Levezetett szobák",
   "roomsHostedSubtitleNone": "mai szobák",
   "roomsHostedSubtitleWithSessions": "mentett játékok: {count}",
+  "eventsToday": "Rendezvények ma: {count}",
+  "@eventsToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@roomsHostedSubtitleWithSessions": {
     "placeholders": {
       "count": {
@@ -108,8 +133,12 @@
   },
   "hours": "Óra",
   "rooms": "Szoba",
+  "events": "Rendezvények",
+  "eventsSheetEmpty": "Még nincs Rendezvény.\nNyomd meg: \"Rendezvény hozzáadása\".",
   "sessionsSheetEmpty": "Még nincs Játék.\nNyomd meg: „Játék hozzáadása”.",
   "addSession": "Játék hozzáadása",
+  "addEvent": "Rendezvény hozzáadása",
+  "selectEventTime": "Rendezvény időpontjának megadása",
   "saveSession": "Játék mentése",
   "sessionNumber": "Játék #{number}",
   "@sessionNumber": {

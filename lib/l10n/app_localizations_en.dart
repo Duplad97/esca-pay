@@ -42,6 +42,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jumpInRate => 'Jump-in game rate';
 
   @override
+  String get eventFine => 'Event bonus';
+
+  @override
   String get ftPerHour => 'Ft / hour';
 
   @override
@@ -49,6 +52,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ftPerJumpIn => 'Ft / jump-in';
+
+  @override
+  String get ftPerEvent => 'Ft / event';
 
   @override
   String get weekStartsOn => 'Week starts on';
@@ -110,6 +116,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectedDay => 'Selected day';
 
   @override
+  String get dayShort => 'Day';
+
+  @override
   String get previousDayTooltip => 'Previous day';
 
   @override
@@ -118,6 +127,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String hoursRoomsLine(String hours, int rooms) {
     return 'Hours: $hours • Rooms: $rooms';
+  }
+
+  @override
+  String hoursRoomsEventsLine(String hours, int rooms, int events) {
+    return 'Hours: $hours • Rooms: $rooms • Events: $events';
   }
 
   @override
@@ -173,6 +187,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String eventsToday(int count) {
+    return 'Events today: $count';
+  }
+
+  @override
   String roomsSessionsMismatch(int sessions, int rooms) {
     return 'Heads up: sessions ($sessions) ≠ rooms hosted ($rooms).';
   }
@@ -210,10 +229,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rooms => 'Rooms';
 
   @override
+  String get events => 'Events';
+
+  @override
+  String get eventsSheetEmpty => 'No events yet.\nTap “Add event”.';
+
+  @override
+  String get selectEventTime => 'Select Event Time';
+
+  @override
   String get sessionsSheetEmpty => 'No sessions yet.\nTap “Add session”.';
 
   @override
   String get addSession => 'Add session';
+
+  @override
+  String get addEvent => 'Add event';
 
   @override
   String get saveSession => 'Save session';
