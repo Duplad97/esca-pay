@@ -136,6 +136,32 @@ class AppLocalizationsHu extends AppLocalizations {
   String get hoursWorkedSubtitle => 'túlél(t) órák (tisztelettel)';
 
   @override
+  String get startTimeTitle => 'Kezdési idő';
+
+  @override
+  String get startTimeSubtitle => 'amikor bejelentkezett';
+
+  @override
+  String get endTimeTitle => 'Befejezési idő';
+
+  @override
+  String get endTimeSubtitle => 'amikor kijelentkezett';
+
+  @override
+  String get timeTrackingCalculation => 'Automatikusan számítva';
+
+  @override
+  String get selectStartTime => 'Válassz kezdési időpontot';
+
+  @override
+  String get selectEndTime => 'Válassz befejezési időpontot';
+
+  @override
+  String hoursCalculatedFromTime(String hours) {
+    return 'Órák az időből számítva: $hours';
+  }
+
+  @override
   String get roomsHostedTitle => 'Levezetett szobák';
 
   @override

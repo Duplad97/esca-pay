@@ -10,6 +10,10 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		63001A782F2308200047CA24 /* girly@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63001A762F2308200047CA24 /* girly@3x.png */; };
+		63001A7B2F2308200047CA24 /* girly@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63001A752F2308200047CA24 /* girly@2x.png */; };
+		63001A8E2F231CF90047CA24 /* blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63001A8D2F231CF90047CA24 /* blue@3x.png */; };
+		63001A8F2F231CF90047CA24 /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63001A8C2F231CF90047CA24 /* blue@2x.png */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		85C931C389C9A9A343753026 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B24BAF6F3DE212DF734680D /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -50,6 +54,10 @@
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B24BAF6F3DE212DF734680D /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		63001A752F2308200047CA24 /* girly@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "girly@2x.png"; sourceTree = "<group>"; };
+		63001A762F2308200047CA24 /* girly@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "girly@3x.png"; sourceTree = "<group>"; };
+		63001A8C2F231CF90047CA24 /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
+		63001A8D2F231CF90047CA24 /* blue@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@3x.png"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75E4EF39FA5CFC0BEB0B3C5A /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -95,6 +103,17 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
+		63001A772F2308200047CA24 /* App Icons */ = {
+			isa = PBXGroup;
+			children = (
+				63001A8C2F231CF90047CA24 /* blue@2x.png */,
+				63001A8D2F231CF90047CA24 /* blue@3x.png */,
+				63001A752F2308200047CA24 /* girly@2x.png */,
+				63001A762F2308200047CA24 /* girly@3x.png */,
+			);
+			path = "App Icons";
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +149,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				63001A772F2308200047CA24 /* App Icons */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -259,9 +279,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63001A8E2F231CF90047CA24 /* blue@3x.png in Resources */,
+				63001A8F2F231CF90047CA24 /* blue@2x.png in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				63001A782F2308200047CA24 /* girly@3x.png in Resources */,
+				63001A7B2F2308200047CA24 /* girly@2x.png in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -25,9 +25,31 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
-  android: true
+  image_path: "lib/assets/app_icon.png"
   ios: true
-  image_path: lib/assets/app_icon.png
+  android: true
+  remove_alpha_ios: true
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
+  linux:
+    generate: false
+  flavor_mapping:
+    default:
+      image_path: "lib/assets/app_icon.png"
+      ios: true
+      android: true
+    girly:
+      image_path: "lib/assets/themes/girly/app_icon.png"
+      ios: true
+      android: true
+    boy:
+      image_path: "lib/assets/themes/boy/app_icon.png"
+      ios: true
+      android: true
 
 flutter:
   uses-material-design: true

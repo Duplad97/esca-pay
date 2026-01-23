@@ -136,6 +136,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hoursWorkedSubtitle => 'hours survived (respectfully)';
 
   @override
+  String get startTimeTitle => 'Start time';
+
+  @override
+  String get startTimeSubtitle => 'when you clocked in';
+
+  @override
+  String get endTimeTitle => 'End time';
+
+  @override
+  String get endTimeSubtitle => 'when you clocked out';
+
+  @override
+  String get timeTrackingCalculation => 'Automatically calculated';
+
+  @override
+  String get selectStartTime => 'Select start time';
+
+  @override
+  String get selectEndTime => 'Select end time';
+
+  @override
+  String hoursCalculatedFromTime(String hours) {
+    return 'Hours calculated from time: $hours';
+  }
+
+  @override
   String get roomsHostedTitle => 'Rooms hosted';
 
   @override

@@ -13,7 +13,8 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeIn;
   late final Animation<double> _scaleIn;
@@ -27,12 +28,18 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     );
-    _fadeIn = CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.55));
+    _fadeIn = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.55),
+    );
     _scaleIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.70, curve: Curves.easeOutBack),
     );
-    _float = CurvedAnimation(parent: _controller, curve: const Interval(0.35, 1.0));
+    _float = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.35, 1.0),
+    );
 
     _controller.forward();
 
@@ -40,10 +47,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder<void>(
-          pageBuilder: (context, animation, secondaryAnimation) => const PayCalendarPage(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const PayCalendarPage(),
           transitionDuration: const Duration(milliseconds: 420),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final fade = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+            final fade = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            );
             return FadeTransition(opacity: fade, child: child);
           },
         ),
@@ -76,7 +87,10 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                   child: Transform.translate(
                     offset: Offset(0, -12 * (1 - _fadeIn.value)),
                     child: Transform.translate(
-                      offset: Offset(0, math.sin(_float.value * math.pi * 2) * 6),
+                      offset: Offset(
+                        0,
+                        math.sin(_float.value * math.pi * 2) * 6,
+                      ),
                       child: Transform.scale(
                         scale: 0.86 + (0.14 * _scaleIn.value),
                         child: Column(
@@ -128,7 +142,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   }
 }
 
-
 class _SplashBackground extends StatefulWidget {
   const _SplashBackground();
 
@@ -136,7 +149,8 @@ class _SplashBackground extends StatefulWidget {
   State<_SplashBackground> createState() => _SplashBackgroundState();
 }
 
-class _SplashBackgroundState extends State<_SplashBackground> with SingleTickerProviderStateMixin {
+class _SplashBackgroundState extends State<_SplashBackground>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -161,8 +175,14 @@ class _SplashBackgroundState extends State<_SplashBackground> with SingleTickerP
       animation: _controller,
       builder: (context, _) {
         final t = _controller.value;
-        final a = Alignment(-0.8 + (t * 0.9), -1.0 + (math.sin(t * math.pi * 2) * 0.25));
-        final b = Alignment(1.0 - (t * 0.9), 1.0 - (math.cos(t * math.pi * 2) * 0.25));
+        final a = Alignment(
+          -0.8 + (t * 0.9),
+          -1.0 + (math.sin(t * math.pi * 2) * 0.25),
+        );
+        final b = Alignment(
+          1.0 - (t * 0.9),
+          1.0 - (math.cos(t * math.pi * 2) * 0.25),
+        );
         return DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -213,7 +233,11 @@ class _BlobPainter extends CustomPainter {
       required Color color,
     }) {
       paint.color = color;
-      canvas.drawCircle(Offset(x * size.width, y * size.height), r * size.shortestSide, paint);
+      canvas.drawCircle(
+        Offset(x * size.width, y * size.height),
+        r * size.shortestSide,
+        paint,
+      );
     }
 
     blob(

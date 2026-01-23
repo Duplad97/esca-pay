@@ -1,0 +1,3 @@
+flutter_launcher_icons:
+  image_path: "lib/assets/themes/girly/app_icon.png"
+  ios: true

@@ -1,5 +1,7 @@
 import 'package:esca_pay/features/theme_selector/theme_selector_page.dart';
+import 'package:esca_pay/shared/themes/theme_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 
 import '../../shared/storage/storage.dart';
@@ -89,17 +91,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[
-              Color(0xFFFFF0F7),
-              Color(0xFFF2F3FF),
-              Color(0xFFEFFFFA),
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(gradient: themeManager.currentTheme.gradient),
         child: SafeArea(
           child: Column(
             children: <Widget>[
@@ -128,6 +120,14 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                   );
                 },
               ),
+              if (kDebugMode)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 12, bottom: 8),
+                    child: Container(),
+                  ),
+                ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 220),
                 switchInCurve: Curves.easeOutCubic,

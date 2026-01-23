@@ -344,6 +344,54 @@ abstract class AppLocalizations {
   /// **'hours survived (respectfully)'**
   String get hoursWorkedSubtitle;
 
+  /// No description provided for @startTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time'**
+  String get startTimeTitle;
+
+  /// No description provided for @startTimeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'when you clocked in'**
+  String get startTimeSubtitle;
+
+  /// No description provided for @endTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End time'**
+  String get endTimeTitle;
+
+  /// No description provided for @endTimeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'when you clocked out'**
+  String get endTimeSubtitle;
+
+  /// No description provided for @timeTrackingCalculation.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically calculated'**
+  String get timeTrackingCalculation;
+
+  /// No description provided for @selectStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select start time'**
+  String get selectStartTime;
+
+  /// No description provided for @selectEndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select end time'**
+  String get selectEndTime;
+
+  /// No description provided for @hoursCalculatedFromTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours calculated from time: {hours}'**
+  String hoursCalculatedFromTime(String hours);
+
   /// No description provided for @roomsHostedTitle.
   ///
   /// In en, this message translates to:

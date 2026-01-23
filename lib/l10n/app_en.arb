@@ -60,6 +60,19 @@
 
   "hoursWorkedTitle": "Hours worked",
   "hoursWorkedSubtitle": "hours survived (respectfully)",
+  "startTimeTitle": "Start time",
+  "startTimeSubtitle": "when you clocked in",
+  "endTimeTitle": "End time",
+  "endTimeSubtitle": "when you clocked out",
+  "timeTrackingCalculation": "Automatically calculated",
+  "selectStartTime": "Select start time",
+  "selectEndTime": "Select end time",
+  "hoursCalculatedFromTime": "Hours calculated from time: {hours}",
+  "@hoursCalculatedFromTime": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
   "roomsHostedTitle": "Rooms hosted",
   "roomsHostedSubtitleNone": "rooms ran today",
   "roomsHostedSubtitleWithSessions": "sessions saved: {count}",

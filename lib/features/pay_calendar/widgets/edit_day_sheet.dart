@@ -7,6 +7,7 @@ import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
 import '../models/game_session.dart';
 import 'stepper_row.dart';
+import 'time_picker_row.dart';
 
 class EditDaySheet extends StatefulWidget {
   const EditDaySheet({
@@ -36,6 +37,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
   late double _hours;
   late int _rooms;
   late List<GameSession> _sessions;
+  TimeOfDay? _startTime;
+  TimeOfDay? _endTime;
 
   @override
   void initState() {
@@ -43,11 +46,22 @@ class _EditDaySheetState extends State<EditDaySheet> {
     _hours = widget.initialHours;
     _rooms = widget.initialRooms;
     _sessions = widget.initialSessions.toList(growable: true);
+    _startTime = const TimeOfDay(hour: 8, minute: 30);
+    _endTime = const TimeOfDay(hour: 16, minute: 0);
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _updateHoursFromTime() {
+    if (_startTime != null && _endTime != null) {
+      HapticFeedback.selectionClick();
+      setState(() {
+        _hours = DayEntry.calculateHours(_startTime!, _endTime!);
+      });
+    }
   }
 
   @override
@@ -59,10 +73,12 @@ class _EditDaySheetState extends State<EditDaySheet> {
     final jumpInCount = _sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
-    final earnings = (_hours * widget.hourlyWage) +
+    final earnings =
+        (_hours * widget.hourlyWage) +
         (_rooms * widget.perRoomBonus) +
         (jumpInCount * widget.jumpInRate);
-    final roomsMismatch = normalSessionsCount > 0 && _rooms != normalSessionsCount;
+    final roomsMismatch =
+        normalSessionsCount > 0 && _rooms != normalSessionsCount;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -95,20 +111,32 @@ class _EditDaySheetState extends State<EditDaySheet> {
               ],
             ),
             const SizedBox(height: 14),
-            StepperRow(
-              title: l10n.hoursWorkedTitle,
-              subtitle: l10n.hoursWorkedSubtitle,
-              valueText: _hours.toStringAsFixed(1),
-              onMinus: () {
-                HapticFeedback.selectionClick();
-                setState(() => _hours = (_hours - 0.5).clamp(0, 24));
-              },
-              onPlus: () {
-                HapticFeedback.selectionClick();
-                setState(() => _hours = (_hours + 0.5).clamp(0, 24));
+            TimePickerRow(
+              title: l10n.startTimeTitle,
+              subtitle: l10n.startTimeSubtitle,
+              time: _startTime,
+              isStartTime: true,
+              onTimeChanged: (time) {
+                setState(() => _startTime = time);
+                _updateHoursFromTime();
               },
             ),
             const SizedBox(height: 10),
+            TimePickerRow(
+              title: l10n.endTimeTitle,
+              subtitle: l10n.endTimeSubtitle,
+              time: _endTime,
+              isStartTime: false,
+              onTimeChanged: (time) {
+                setState(() => _endTime = time);
+                _updateHoursFromTime();
+              },
+            ),
+            if (_startTime != null && _endTime != null) ...<Widget>[
+              const SizedBox(height: 10),
+              _TimeCalculationHint(hours: _hours),
+            ],
+            const SizedBox(height: 18),
             StepperRow(
               title: l10n.roomsHostedTitle,
               subtitle: normalSessionsCount > 0
@@ -154,6 +182,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         hours: _hours,
                         rooms: _rooms,
                         sessions: _sessions,
+                        startTime: _startTime,
+                        endTime: _endTime,
                       ),
                     );
                   },
@@ -198,6 +228,45 @@ class _MismatchHint extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: cs.onSecondaryContainer,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TimeCalculationHint extends StatelessWidget {
+  const _TimeCalculationHint({required this.hours});
+
+  final double hours;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.outlineVariant),
+        color: cs.tertiaryContainer.withValues(alpha: 0.55),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.check_circle_outline, color: cs.tertiary, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n.hoursCalculatedFromTime(hours.toStringAsFixed(1)),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onTertiaryContainer,
                 ),
               ),
             ),

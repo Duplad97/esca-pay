@@ -59,6 +59,19 @@
   "editDay": "Nap szerkesztése",
   "hoursWorkedTitle": "Ledolgozott órák",
   "hoursWorkedSubtitle": "túlél(t) órák (tisztelettel)",
+  "startTimeTitle": "Kezdési idő",
+  "startTimeSubtitle": "amikor bejelentkezett",
+  "endTimeTitle": "Befejezési idő",
+  "endTimeSubtitle": "amikor kijelentkezett",
+  "timeTrackingCalculation": "Automatikusan számítva",
+  "selectStartTime": "Válassz kezdési időpontot",
+  "selectEndTime": "Válassz befejezési időpontot",
+  "hoursCalculatedFromTime": "Órák az időből számítva: {hours}",
+  "@hoursCalculatedFromTime": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
   "roomsHostedTitle": "Levezetett szobák",
   "roomsHostedSubtitleNone": "mai szobák",
   "roomsHostedSubtitleWithSessions": "mentett játékok: {count}",
