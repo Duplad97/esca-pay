@@ -84,6 +84,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme_girly => 'Pink';
 
   @override
+  String get theme_blue => 'Blue';
+
+  @override
   String get theme_boy => 'Blue';
 
   @override

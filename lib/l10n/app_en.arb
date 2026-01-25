@@ -28,6 +28,7 @@
   "themesTooltip": "Themes",
   "theme_default": "Default",
   "theme_girly": "Pink",
+  "theme_blue": "Blue",
   "theme_boy": "Blue",
 
   "previousMonthTooltip": "Previous month",

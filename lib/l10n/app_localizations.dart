@@ -248,6 +248,12 @@ abstract class AppLocalizations {
   /// **'Pink'**
   String get theme_girly;
 
+  /// No description provided for @theme_blue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get theme_blue;
+
   /// No description provided for @theme_boy.
   ///
   /// In en, this message translates to:

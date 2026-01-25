@@ -35,8 +35,8 @@ class _ThemeSelectorPageState extends State<ThemeSelectorPage> {
         return l10n.theme_default;
       case 'girly':
         return l10n.theme_girly;
-      case 'boy':
-        return l10n.theme_boy;
+      case 'blue':
+        return l10n.theme_blue;
       default:
         return themeName;
     }

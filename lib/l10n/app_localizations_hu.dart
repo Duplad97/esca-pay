@@ -84,6 +84,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get theme_girly => 'Rózsaszín';
 
   @override
+  String get theme_blue => 'Kék';
+
+  @override
   String get theme_boy => 'Kék';
 
   @override

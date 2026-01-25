@@ -13,8 +13,8 @@ class ThemeManager extends ChangeNotifier {
 
   late SharedPreferences _prefs;
   bool _isChangingIcon = false; // Flag to prevent concurrent changes
-  String? _currentIconName =
-      null; // Track currently active icon (null = primary/girly)
+  String?
+  _currentIconName; // Track currently active icon (null = primary/girly)
 
   final List<ThemeDefinition> _themes = [
     //const ThemeDefinition(

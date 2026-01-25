@@ -4,7 +4,6 @@ import 'package:esca_pay/l10n/app_localizations.dart';
 
 import '../models/event.dart';
 import '../widgets/combined_time_picker_dialog.dart';
-import '../../../shared/utils/money_format.dart';
 
 class EditEventsSheet extends StatefulWidget {
   const EditEventsSheet({
