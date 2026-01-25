@@ -341,4 +341,31 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get bestLabel => 'Rekord';
+
+  @override
+  String get weeklyPaymentSummaryTitle => 'Heti összegzés';
+
+  @override
+  String get weeklyPaymentSummaryBody =>
+      'Szia, elküldted már a heti összegzésedet?';
+
+  @override
+  String get weeklyPaymentSummaryConfirm => 'Elküldtem';
+
+  @override
+  String get weeklyPaymentSummaryDialogTitle => 'Összegzés megerősítése';
+
+  @override
+  String get weeklyPaymentSummaryDialogMessage =>
+      'Elküldted már a heti összegzésedet?';
+
+  @override
+  String get weeklyPaymentSummaryDialogConfirm => 'Elküldtem';
+
+  @override
+  String get weeklyPaymentSummaryDialogCancel => 'Még nem';
+
+  @override
+  String get weeklyPaymentSummaryCheckboxLabel =>
+      'Elküldted a heti összegzésedet';
 }

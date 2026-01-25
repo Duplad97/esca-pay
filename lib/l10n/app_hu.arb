@@ -182,5 +182,14 @@
   "tapToFlap": "Koppints a repüléshez",
   "gameOverTapToRetry": "Vége — koppints az újrakezdéshez",
   "scoreLabel": "Pont",
-  "bestLabel": "Rekord"
+  "bestLabel": "Rekord",
+
+  "weeklyPaymentSummaryTitle": "Heti összegzés",
+  "weeklyPaymentSummaryBody": "Szia, elküldted már a heti összegzésedet?",
+  "weeklyPaymentSummaryConfirm": "Elküldtem",
+  "weeklyPaymentSummaryDialogTitle": "Összegzés megerősítése",
+  "weeklyPaymentSummaryDialogMessage": "Elküldted már a heti összegzésedet?",
+  "weeklyPaymentSummaryDialogConfirm": "Elküldtem",
+  "weeklyPaymentSummaryDialogCancel": "Még nem",
+  "weeklyPaymentSummaryCheckboxLabel": "Elküldted a heti összegzésedet"
 }

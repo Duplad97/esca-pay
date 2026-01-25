@@ -339,4 +339,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bestLabel => 'Best';
+
+  @override
+  String get weeklyPaymentSummaryTitle => 'Weekly Summary Ready';
+
+  @override
+  String get weeklyPaymentSummaryBody =>
+      'Confirm that you sent your payment summary to your manager';
+
+  @override
+  String get weeklyPaymentSummaryConfirm => 'Confirm Sent';
+
+  @override
+  String get weeklyPaymentSummaryDialogTitle => 'Summary Confirmation';
+
+  @override
+  String get weeklyPaymentSummaryDialogMessage =>
+      'Have you sent your weekly payment summary to your manager?';
+
+  @override
+  String get weeklyPaymentSummaryDialogConfirm => 'Yes, I sent it';
+
+  @override
+  String get weeklyPaymentSummaryDialogCancel => 'Not yet';
+
+  @override
+  String get weeklyPaymentSummaryCheckboxLabel => 'I sent my weekly summary';
 }

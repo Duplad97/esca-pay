@@ -709,6 +709,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Best'**
   String get bestLabel;
+
+  /// No description provided for @weeklyPaymentSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Summary Ready'**
+  String get weeklyPaymentSummaryTitle;
+
+  /// No description provided for @weeklyPaymentSummaryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm that you sent your payment summary to your manager'**
+  String get weeklyPaymentSummaryBody;
+
+  /// No description provided for @weeklyPaymentSummaryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Sent'**
+  String get weeklyPaymentSummaryConfirm;
+
+  /// No description provided for @weeklyPaymentSummaryDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary Confirmation'**
+  String get weeklyPaymentSummaryDialogTitle;
+
+  /// No description provided for @weeklyPaymentSummaryDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you sent your weekly payment summary to your manager?'**
+  String get weeklyPaymentSummaryDialogMessage;
+
+  /// No description provided for @weeklyPaymentSummaryDialogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I sent it'**
+  String get weeklyPaymentSummaryDialogConfirm;
+
+  /// No description provided for @weeklyPaymentSummaryDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get weeklyPaymentSummaryDialogCancel;
+
+  /// No description provided for @weeklyPaymentSummaryCheckboxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I sent my weekly summary'**
+  String get weeklyPaymentSummaryCheckboxLabel;
 }
 
 class _AppLocalizationsDelegate

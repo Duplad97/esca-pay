@@ -9,6 +9,11 @@ class SettingsStorage {
   static const _weekStartWeekdayKey = 'weekStartWeekday';
   static const _localeCodeKey = 'localeCode';
   static const _bestFlappyScoreKey = 'bestFlappyScore';
+  static const _weeklyPaymentSummarySentKey = 'weeklyPaymentSummarySent';
+  static const _weeklyReminderWeekStartDateKey = 'weeklyReminderWeekStartDate';
+  static const _weeklyPaymentSummaryConfirmationDateKey =
+      'weeklyPaymentSummaryConfirmationDate';
+  static const _lastAppLaunchTimeKey = 'lastAppLaunchTime';
 
   Box<dynamic>? _box;
 
@@ -90,5 +95,50 @@ class SettingsStorage {
 
   Future<void> setBestFlappyScore(int value) async {
     await _box?.put(_bestFlappyScoreKey, value.clamp(0, 999999));
+  }
+
+  bool isWeeklyPaymentSummarySent() {
+    final v = _box?.get(_weeklyPaymentSummarySentKey);
+    return v is bool ? v : false;
+  }
+
+  Future<void> setWeeklyPaymentSummarySent(bool value) async {
+    await _box?.put(_weeklyPaymentSummarySentKey, value);
+  }
+
+  String? getWeeklyReminderWeekStartDate() {
+    final v = _box?.get(_weeklyReminderWeekStartDateKey);
+    return v is String && v.isNotEmpty ? v : null;
+  }
+
+  Future<void> setWeeklyReminderWeekStartDate(String dateKey) async {
+    await _box?.put(_weeklyReminderWeekStartDateKey, dateKey);
+  }
+
+  String? getWeeklyPaymentSummaryConfirmationDate() {
+    final v = _box?.get(_weeklyPaymentSummaryConfirmationDateKey);
+    return v is String && v.isNotEmpty ? v : null;
+  }
+
+  Future<void> setWeeklyPaymentSummaryConfirmationDate(String dateKey) async {
+    await _box?.put(_weeklyPaymentSummaryConfirmationDateKey, dateKey);
+  }
+
+  Future<void> clearWeeklyPaymentSummaryConfirmationDate() async {
+    await _box?.delete(_weeklyPaymentSummaryConfirmationDateKey);
+  }
+
+  int? getLastAppLaunchTime() {
+    final v = _box?.get(_lastAppLaunchTimeKey);
+    return v is int ? v : null;
+  }
+
+  Future<void> setLastAppLaunchTime(int timestamp) async {
+    await _box?.put(_lastAppLaunchTimeKey, timestamp);
+  }
+
+  /// Force flush all pending writes to disk
+  Future<void> flush() async {
+    await _box?.flush();
   }
 }

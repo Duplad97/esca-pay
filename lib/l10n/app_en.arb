@@ -157,5 +157,14 @@
   "tapToFlap": "Tap to flap",
   "gameOverTapToRetry": "Game over — tap to retry",
   "scoreLabel": "Score",
-  "bestLabel": "Best"
+  "bestLabel": "Best",
+
+  "weeklyPaymentSummaryTitle": "Weekly Summary Ready",
+  "weeklyPaymentSummaryBody": "Confirm that you sent your payment summary to your manager",
+  "weeklyPaymentSummaryConfirm": "Confirm Sent",
+  "weeklyPaymentSummaryDialogTitle": "Summary Confirmation",
+  "weeklyPaymentSummaryDialogMessage": "Have you sent your weekly payment summary to your manager?",
+  "weeklyPaymentSummaryDialogConfirm": "Yes, I sent it",
+  "weeklyPaymentSummaryDialogCancel": "Not yet",
+  "weeklyPaymentSummaryCheckboxLabel": "I sent my weekly summary"
 }

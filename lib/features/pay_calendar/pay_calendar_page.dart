@@ -1,11 +1,12 @@
 import 'package:esca_pay/features/theme_selector/theme_selector_page.dart';
 import 'package:esca_pay/shared/themes/theme_manager.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 
-import '../../shared/storage/storage.dart';
 import '../../app/app_settings_controller.dart';
+import '../../shared/services/notification_service.dart';
+import '../../shared/storage/storage.dart';
 import '../../shared/utils/date_time_utils.dart';
 import '../../shared/utils/localized_date_labels.dart';
 import 'models/day_entry.dart';
@@ -17,10 +18,11 @@ import 'widgets/edit_day_sheet.dart';
 import 'widgets/edit_events_sheet.dart';
 import 'widgets/edit_sessions_sheet.dart';
 import 'widgets/rates_sheet.dart';
-import 'widgets/summary_card.dart';
 import 'widgets/selected_day_header.dart';
 import 'widgets/selected_days_summary_sheet.dart';
+import 'widgets/summary_card.dart';
 import 'widgets/top_bar.dart';
+import 'widgets/weekly_summary_checkbox.dart';
 
 class PayCalendarPage extends StatefulWidget {
   const PayCalendarPage({super.key});
@@ -42,6 +44,9 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   int _weekStartWeekday = DateTime.monday;
   String? _localeCode;
 
+  bool _scheduledReminder = false;
+  bool _forceShowReminderCheckbox = false;
+
   final Map<String, DayEntry> _entriesByDayKey = <String, DayEntry>{};
 
   @override
@@ -50,6 +55,30 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
     _loadSavedRates();
     _loadSavedDayEntries();
+
+    // Check if confirmation has expired (from previous day) and reset if needed
+    if (NotificationService().isConfirmationExpired()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await NotificationService().resetWeeklyConfirmation();
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_scheduledReminder) {
+      final l10n = AppLocalizations.of(context)!;
+      NotificationService().scheduleWeeklyPaymentSummaryReminder(
+        weekStartWeekday: _weekStartWeekday,
+        title: l10n.weeklyPaymentSummaryTitle,
+        body: l10n.weeklyPaymentSummaryBody,
+      );
+      _scheduledReminder = true;
+    }
   }
 
   void _loadSavedRates() {
@@ -132,9 +161,27 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 12, bottom: 8),
-                    child: Container(),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        final l10n = AppLocalizations.of(context)!;
+                        NotificationService().scheduleTestReminder(
+                          title: l10n.weeklyPaymentSummaryTitle,
+                          body: l10n.weeklyPaymentSummaryBody,
+                          delaySeconds: 5,
+                        );
+                        setState(() {
+                          _forceShowReminderCheckbox = true;
+                        });
+                      },
+                      icon: const Icon(Icons.notifications_active_outlined),
+                      label: const Text('Test reminder'),
+                    ),
                   ),
                 ),
+              WeeklySummaryCheckbox(
+                weekStartWeekday: _weekStartWeekday,
+                forceShow: _forceShowReminderCheckbox,
+              ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 220),
                 switchInCurve: Curves.easeOutCubic,
@@ -535,6 +582,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   }
 
   Future<void> _openRatesSheet(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -572,5 +620,12 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     await settingsStorage.setEventFine(_eventFine);
     await settingsStorage.setWeekStartWeekday(_weekStartWeekday);
     await appSettingsController.setLocaleCode(_localeCode);
+
+    // Reschedule weekly reminder if week start changed (or always refresh to be safe)
+    await NotificationService().scheduleWeeklyPaymentSummaryReminder(
+      weekStartWeekday: _weekStartWeekday,
+      title: l10n.weeklyPaymentSummaryTitle,
+      body: l10n.weeklyPaymentSummaryBody,
+    );
   }
 }
