@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 import '../../../shared/services/notification_service.dart';
+import '../../../shared/services/debug_log_service.dart';
 
 class WeeklySummaryCheckbox extends StatefulWidget {
   final int weekStartWeekday;
@@ -17,48 +17,8 @@ class WeeklySummaryCheckbox extends StatefulWidget {
   State<WeeklySummaryCheckbox> createState() => _WeeklySummaryCheckboxState();
 }
 
-class _WeeklySummaryCheckboxState extends State<WeeklySummaryCheckbox>
-    with WidgetsBindingObserver {
+class _WeeklySummaryCheckboxState extends State<WeeklySummaryCheckbox> {
   bool _isSubmitting = false;
-  late Timer _refreshTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Listen to app lifecycle events
-    WidgetsBinding.instance.addObserver(this);
-
-    // Poll frequently to catch state changes
-    _refreshTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // When app comes back to foreground, rebuild to check if confirmation changed
-    if (state == AppLifecycleState.resumed) {
-      print('[WeeklySummaryCheckbox] App resumed, rebuilding');
-      if (mounted) {
-        setState(() {});
-      }
-    }
-  }
-
-  @override
-  void didUpdateWidget(WeeklySummaryCheckbox oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _refreshTimer.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
 
   Future<void> _confirm() async {
     if (_isSubmitting || NotificationService().isWeeklySummarySent()) return;
@@ -82,7 +42,7 @@ class _WeeklySummaryCheckboxState extends State<WeeklySummaryCheckbox>
     );
     final isConfirmed = NotificationService().isWeeklySummarySent();
 
-    print(
+    debugLog.log(
       '[WeeklySummaryCheckbox.build] isConfirmed=$isConfirmed, inWindow=$inNotificationWindow, forceShow=${widget.forceShow}',
     );
 

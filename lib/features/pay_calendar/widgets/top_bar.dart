@@ -16,6 +16,7 @@ class TopBar extends StatelessWidget {
     required this.onNextMonth,
     required this.onRates,
     required this.onTheme,
+    this.onMonthTap,
   });
 
   final DateTime month;
@@ -23,6 +24,7 @@ class TopBar extends StatelessWidget {
   final VoidCallback onNextMonth;
   final VoidCallback onRates;
   final VoidCallback onTheme;
+  final VoidCallback? onMonthTap;
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +98,16 @@ class TopBar extends StatelessWidget {
                       icon: const Icon(Icons.chevron_left),
                     ),
                     Expanded(
-                      child: Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w800),
+                      child: GestureDetector(
+                        onTap: onMonthTap,
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
                       ),
                     ),
                     IconButton(

@@ -9,6 +9,7 @@ import '../../shared/services/notification_service.dart';
 import '../../shared/storage/storage.dart';
 import '../../shared/utils/date_time_utils.dart';
 import '../../shared/utils/localized_date_labels.dart';
+import '../dev/debug_log_screen.dart';
 import 'models/day_entry.dart';
 import 'models/event.dart';
 import 'models/game_session.dart';
@@ -46,6 +47,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
 
   bool _scheduledReminder = false;
   bool _forceShowReminderCheckbox = false;
+  int _debugTapCount = 0;
 
   final Map<String, DayEntry> _entriesByDayKey = <String, DayEntry>{};
 
@@ -154,6 +156,18 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                       builder: (_) => const ThemeSelectorPage(),
                     ),
                   );
+                },
+                onMonthTap: () {
+                  // Hidden debug logs access: tap 3 times on the month
+                  _debugTapCount++;
+                  if (_debugTapCount >= 3) {
+                    _debugTapCount = 0;
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const DebugLogScreen(),
+                      ),
+                    );
+                  }
                 },
               ),
               if (kDebugMode)
