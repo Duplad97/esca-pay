@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import '../storage/storage.dart';
 
 class NotificationService {
@@ -19,6 +20,12 @@ class NotificationService {
   Future<void> init() async {
     print('[NotificationService.init] Starting initialization');
     tzdata.initializeTimeZones();
+
+    // Set timezone to device's local timezone
+    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    print('[NotificationService.init] Timezone set to: $timeZoneName');
+
     await _initializePlugin();
     print('[NotificationService.init] Plugin initialized');
 
@@ -38,14 +45,26 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
-    await _cancelAllReminderIds();
-
     // Reset weekly confirmation when a new week starts
     _resetIfNewWeek(weekStartWeekday);
     if (settingsStorage.isWeeklyPaymentSummarySent()) {
       print(
         '[NotificationService] Weekly summary already confirmed; skipping schedule',
       );
+      return;
+    }
+
+    // Check if notifications are already scheduled for this week
+    final pendingNotifications = await _flutterLocalNotificationsPlugin
+        .pendingNotificationRequests();
+    final hasScheduledReminders = pendingNotifications.any(
+      (n) =>
+          n.id >= _baseNotificationId &&
+          n.id < _baseNotificationId + _hourlyRepeats,
+    );
+
+    if (hasScheduledReminders) {
+      print('[NotificationService] Reminders already scheduled, skipping');
       return;
     }
 
@@ -182,7 +201,8 @@ class NotificationService {
     final lastDayOfWeek = ((weekStartWeekday + 5) % 7) + 1;
     final isLastDayOfWeek = now.weekday == lastDayOfWeek;
     final isAfter6PM = now.hour >= 18;
-    return isLastDayOfWeek && isAfter6PM;
+    final isBeforeMidnight = now.hour < 24;
+    return isLastDayOfWeek && isAfter6PM && isBeforeMidnight;
   }
 
   /// Reset the confirmation for the next week (typically called at week start).
