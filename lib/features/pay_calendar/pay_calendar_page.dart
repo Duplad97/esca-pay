@@ -170,28 +170,6 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                   }
                 },
               ),
-              if (kDebugMode)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12, bottom: 8),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        final l10n = AppLocalizations.of(context)!;
-                        NotificationService().scheduleTestReminder(
-                          title: l10n.weeklyPaymentSummaryTitle,
-                          body: l10n.weeklyPaymentSummaryBody,
-                          delaySeconds: 5,
-                        );
-                        setState(() {
-                          _forceShowReminderCheckbox = true;
-                        });
-                      },
-                      icon: const Icon(Icons.notifications_active_outlined),
-                      label: const Text('Test reminder'),
-                    ),
-                  ),
-                ),
               WeeklySummaryCheckbox(
                 weekStartWeekday: _weekStartWeekday,
                 forceShow: _forceShowReminderCheckbox,

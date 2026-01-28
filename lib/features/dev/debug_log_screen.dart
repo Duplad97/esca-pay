@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:esca_pay/shared/services/debug_log_service.dart';
+import 'package:esca_pay/shared/services/notification_service.dart';
+import 'package:esca_pay/l10n/app_localizations.dart';
 
 class DebugLogScreen extends StatefulWidget {
   const DebugLogScreen({super.key});
@@ -42,6 +44,24 @@ class _DebugLogScreenState extends State<DebugLogScreen> {
       appBar: AppBar(
         title: const Text('Debug Logs'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_active_outlined),
+            tooltip: 'Test Reminder',
+            onPressed: () {
+              final l10n = AppLocalizations.of(context)!;
+              NotificationService().scheduleTestReminder(
+                title: l10n.weeklyPaymentSummaryTitle,
+                body: l10n.weeklyPaymentSummaryBody,
+                delaySeconds: 5,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Test notification scheduled for 5 seconds'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => setState(() {}),

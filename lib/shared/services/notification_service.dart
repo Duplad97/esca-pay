@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'dart:math';
 import '../storage/storage.dart';
 import 'debug_log_service.dart';
 
@@ -15,13 +16,18 @@ class NotificationService {
 
   static const String _notificationChannelId = 'weekly_summary_reminder';
   static const String _notificationChannelName = 'Weekly Summary Reminder';
-  static const int _baseNotificationId = 2000;
   static const int _hourlyRepeats = 6; // 6pm..11pm inclusive
 
   // Store scheduling parameters for rescheduling next week
   int? _lastWeekStartWeekday;
   String? _lastTitle;
   String? _lastBody;
+  List<int>? _currentNotificationIds;
+
+  /// Generate a unique notification ID
+  int _generateUniqueId() {
+    return Random().nextInt(900000) + 100000; // 100000-999999
+  }
 
   /// Helper method to log to both console and debug log
   void _log(String message) {
@@ -48,6 +54,14 @@ class NotificationService {
         >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
     _log('[NotificationService.init] iOS permissions requested');
+    
+    // Request Android permissions (for Android 13+)
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.requestNotificationsPermission();
+    _log('[NotificationService.init] Android permissions requested');
   }
 
   /// Schedule the weekly payment summary notification.
@@ -114,8 +128,17 @@ class NotificationService {
         _log(
           '[NotificationService] We are on the last day after 6pm, scheduling for remaining hours today',
         );
-        // Schedule for remaining hours today
-        scheduledDate = now;
+        // Schedule starting from the next full hour (to avoid scheduling in the past)
+        final nextHour = now.hour + 1;
+        scheduledDate = tz.TZDateTime(
+          tz.local,
+          now.year,
+          now.month,
+          now.day,
+          nextHour,
+          0,
+          0,
+        );
       } else {
         _log(
           '[NotificationService] Scheduled date is in past, moving to next week',
@@ -124,59 +147,30 @@ class NotificationService {
       }
     }
 
-    _log('[NotificationService] Final scheduled date: $scheduledDate');
+    _log('[NotificationService] First notification scheduled for: $scheduledDate');
 
-    // Check if notifications are already scheduled for future times
+    // Always cancel any existing pending notifications to avoid duplicates
     final pendingNotifications = await _flutterLocalNotificationsPlugin
         .pendingNotificationRequests();
     _log(
       '[NotificationService] Pending notifications: ${pendingNotifications.length}',
     );
 
-    final reminderIds = pendingNotifications
-        .where(
-          (n) =>
-              n.id >= _baseNotificationId &&
-              n.id < _baseNotificationId + _hourlyRepeats,
-        )
-        .toList();
-
-    if (reminderIds.isNotEmpty) {
+    if (pendingNotifications.isNotEmpty) {
       _log(
-        '[NotificationService] Found ${reminderIds.length} existing reminder notifications:',
+        '[NotificationService] Canceling ${pendingNotifications.length} existing notifications to avoid duplicates',
       );
-
-      // Calculate what the base scheduled time should be
-      var baseScheduledDate = _nextOccurrenceOfWeekday(now, lastDayOfWeek);
-      baseScheduledDate = tz.TZDateTime(
-        tz.local,
-        baseScheduledDate.year,
-        baseScheduledDate.month,
-        baseScheduledDate.day,
-        18,
-        0,
-        0,
-      );
-      if (baseScheduledDate.isBefore(now) &&
-          !(now.weekday == lastDayOfWeek && now.hour >= 18)) {
-        baseScheduledDate = baseScheduledDate.add(const Duration(days: 7));
+      for (final notif in pendingNotifications) {
+        await _flutterLocalNotificationsPlugin.cancel(notif.id);
       }
+    }
 
-      for (final notif in reminderIds) {
-        final hourOffset = notif.id - _baseNotificationId;
-        final scheduledTime = baseScheduledDate.add(
-          Duration(hours: hourOffset),
-        );
-        final hourStr = scheduledTime.hour.toString().padLeft(2, '0');
-        final minStr = scheduledTime.minute.toString().padLeft(2, '0');
-        final timeStr = '$hourStr:$minStr';
-        final isPast = scheduledTime.isBefore(now);
-        _log(
-          '[NotificationService]   - ID ${notif.id}: ${notif.title} - scheduled for ${scheduledTime.year}-${scheduledTime.month}-${scheduledTime.day} at $timeStr${isPast ? ' (PAST)' : ''}',
-        );
-      }
+    if (_currentNotificationIds != null && _currentNotificationIds!.isNotEmpty) {
       _log(
-        '[NotificationService] Skipping reschedule - notifications already exist',
+        '[NotificationService] Already have scheduled IDs in memory: ${_currentNotificationIds!.length}',
+      );
+      _log(
+        '[NotificationService] Skipping reschedule - using existing scheduled notifications',
       );
       return;
     }
@@ -204,8 +198,9 @@ class NotificationService {
     );
 
     int scheduledCount = 0;
+    _currentNotificationIds = [];
     _log(
-      '[NotificationService] Attempting to schedule ${_hourlyRepeats} notifications:',
+      '[NotificationService] Attempting to schedule notifications from $scheduledDate:',
     );
     for (int i = 0; i < _hourlyRepeats; i++) {
       final when = scheduledDate.add(Duration(hours: i));
@@ -213,10 +208,13 @@ class NotificationService {
       final minStr = when.minute.toString().padLeft(2, '0');
       final timeStr = '$hourStr:$minStr';
 
-      // Only schedule if the time is in the future
-      if (when.isAfter(now)) {
+      // Only schedule if the time is in the future AND on the same day
+      if (when.isAfter(now) && when.day == scheduledDate.day) {
+        final notificationId = _generateUniqueId();
+        _currentNotificationIds!.add(notificationId);
+        
         await _flutterLocalNotificationsPlugin.zonedSchedule(
-          _baseNotificationId + i,
+          notificationId,
           title,
           body,
           when,
@@ -227,8 +225,13 @@ class NotificationService {
         );
         scheduledCount++;
         _log(
-          '[NotificationService]   ✓ #${i + 1}: ${when.year}-${when.month}-${when.day} at $timeStr (ID: ${_baseNotificationId + i})',
+          '[NotificationService]   ✓ #${i + 1}: ${when.year}-${when.month}-${when.day} at $timeStr (ID: $notificationId)',
         );
+      } else if (when.day != scheduledDate.day) {
+        _log(
+          '[NotificationService]   ✗ #${i + 1}: ${when.year}-${when.month}-${when.day} at $timeStr - SKIPPED (next day)',
+        );
+        break; // Stop scheduling once we've crossed into the next day
       } else {
         _log(
           '[NotificationService]   ✗ #${i + 1}: ${when.year}-${when.month}-${when.day} at $timeStr - SKIPPED (in past)',
@@ -278,8 +281,9 @@ class NotificationService {
       iOS: iosDetails,
     );
 
+    final testNotificationId = _generateUniqueId();
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-      _baseNotificationId + 99,
+      testNotificationId,
       title,
       body,
       when,
@@ -288,7 +292,7 @@ class NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
-    _log('[NotificationService] Scheduled test reminder for $when');
+    _log('[NotificationService] Scheduled test reminder for $when (ID: $testNotificationId)');
   }
 
   /// Mark the weekly payment summary as confirmed.
@@ -367,8 +371,10 @@ class NotificationService {
 
     for (int i = 0; i < _hourlyRepeats; i++) {
       final when = scheduledDate.add(Duration(hours: i));
+      final notificationId = _generateUniqueId();
+      
       await _flutterLocalNotificationsPlugin.zonedSchedule(
-        _baseNotificationId + i,
+        notificationId,
         title,
         body,
         when,
@@ -380,7 +386,7 @@ class NotificationService {
       final hourStr = when.hour.toString().padLeft(2, '0');
       final minStr = when.minute.toString().padLeft(2, '0');
       _log(
-        '[NotificationService]   ✓ Next week #${i + 1}: ${when.year}-${when.month}-${when.day} at $hourStr:$minStr (ID: ${_baseNotificationId + i})',
+        '[NotificationService]   ✓ Next week #${i + 1}: ${when.year}-${when.month}-${when.day} at $hourStr:$minStr (ID: $notificationId)',
       );
     }
 
@@ -449,8 +455,11 @@ class NotificationService {
   }
 
   Future<void> _cancelAllReminderIds() async {
-    for (int i = 0; i < _hourlyRepeats; i++) {
-      await _flutterLocalNotificationsPlugin.cancel(_baseNotificationId + i);
+    if (_currentNotificationIds != null) {
+      for (final id in _currentNotificationIds!) {
+        await _flutterLocalNotificationsPlugin.cancel(id);
+      }
+      _currentNotificationIds = [];
     }
   }
 
@@ -506,5 +515,24 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse:
           _onBackgroundNotificationResponse,
     );
+    
+    // Create notification channel for Android
+    await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(
+          AndroidNotificationChannel(
+            _notificationChannelId,
+            _notificationChannelName,
+            description: 'Notification channel for weekly payment summary reminders',
+            importance: Importance.high,
+            enableVibration: true,
+            playSound: true,
+            enableLights: true,
+          ),
+        );
+    
+    _log('[NotificationService._initializePlugin] Android notification channel created');
   }
 }
