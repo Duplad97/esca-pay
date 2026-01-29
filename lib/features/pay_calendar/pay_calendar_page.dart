@@ -13,10 +13,12 @@ import '../dev/debug_log_screen.dart';
 import 'models/day_entry.dart';
 import 'models/event.dart';
 import 'models/game_session.dart';
+import 'models/benefit.dart';
 import 'models/rates.dart';
 import 'widgets/calendar_grid.dart';
 import 'widgets/edit_day_sheet.dart';
 import 'widgets/edit_events_sheet.dart';
+import 'widgets/edit_benefits_sheet.dart';
 import 'widgets/edit_sessions_sheet.dart';
 import 'widgets/rates_sheet.dart';
 import 'widgets/selected_day_header.dart';
@@ -118,6 +120,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           rooms: entry.value.rooms,
           sessions: entry.value.sessions,
           events: entry.value.events,
+          benefits: entry.value.benefits,
         );
       }
     });
@@ -225,6 +228,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                                   _openSessionsSheet(context, _selectedDay),
                               onEditEvents: () =>
                                   _openEventsSheet(context, _selectedDay),
+                              onEditBenefits: () =>
+                                  _openBenefitsSheet(context, _selectedDay),
                               onEditDay: () => _openEditSheet(
                                 context,
                                 _selectedDay,
@@ -450,6 +455,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       rooms: result.rooms,
       sessions: result.sessions,
       events: result.events,
+      benefits: result.benefits,
     );
   }
 
@@ -477,6 +483,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         rooms: nextRooms,
         sessions: sessions,
         events: current?.events ?? const [],
+        benefits: current?.benefits ?? const [],
       );
 
       if (!mounted) return;
@@ -497,6 +504,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         rooms: nextEntry.rooms,
         sessions: nextEntry.sessions,
         events: nextEntry.events,
+        benefits: nextEntry.benefits,
       );
     }
 
@@ -530,6 +538,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         rooms: current?.rooms ?? 0,
         sessions: current?.sessions ?? const [],
         events: events,
+        benefits: current?.benefits ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
       );
@@ -552,6 +561,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         rooms: nextEntry.rooms,
         sessions: nextEntry.sessions,
         events: nextEntry.events,
+        benefits: nextEntry.benefits,
       );
     }
 
@@ -570,6 +580,63 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     ).then((value) {
       if (value == null) return;
       persistEvents(value);
+    });
+  }
+
+  Future<void> _openBenefitsSheet(BuildContext context, DateTime day) async {
+    final key = dayKey(day);
+    final existing = _entriesByDayKey[key];
+    final initial = existing?.benefits ?? const <Benefit>[];
+
+    void persistBenefits(List<Benefit> benefits) async {
+      final current = _entriesByDayKey[key];
+      final nextEntry = DayEntry(
+        hours: current?.hours ?? 0,
+        rooms: current?.rooms ?? 0,
+        sessions: current?.sessions ?? const [],
+        events: current?.events ?? const [],
+        benefits: benefits,
+        startTime: current?.startTime,
+        endTime: current?.endTime,
+      );
+
+      if (!mounted) return;
+      if (nextEntry.isEmpty) {
+        setState(() {
+          _entriesByDayKey.remove(key);
+        });
+        await dayEntriesStorage.deleteEntry(key);
+        return;
+      }
+
+      setState(() {
+        _entriesByDayKey[key] = nextEntry;
+      });
+      await dayEntriesStorage.setEntry(
+        dayKey: key,
+        hours: nextEntry.hours,
+        rooms: nextEntry.rooms,
+        sessions: nextEntry.sessions,
+        events: nextEntry.events,
+        benefits: nextEntry.benefits,
+      );
+    }
+
+    await showModalBottomSheet<List<Benefit>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return EditBenefitsSheet(initialBenefits: initial);
+      },
+    ).then((value) {
+      if (value == null) return;
+      persistBenefits(value);
     });
   }
 

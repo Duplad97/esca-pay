@@ -4,6 +4,7 @@ import 'package:esca_pay/l10n/app_localizations.dart';
 import '../../../shared/utils/date_time_utils.dart';
 import '../../../shared/utils/localized_date_labels.dart';
 import '../../../shared/utils/money_format.dart';
+import '../models/benefit.dart';
 import '../models/day_entry.dart';
 import '../models/game_session.dart';
 
@@ -31,6 +32,19 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     final days = selectedDays.toList(growable: false)
       ..sort((a, b) => dateOnly(a).compareTo(dateOnly(b)));
 
+    // Collect all benefits from all selected days
+    final allBenefits = <Benefit>[];
+    for (final day in days) {
+      final entry = entryForDay(dateOnly(day));
+      if (entry != null && entry.benefits.isNotEmpty) {
+        allBenefits.addAll(entry.benefits);
+      }
+    }
+    final totalBenefits = allBenefits.fold<double>(
+      0,
+      (sum, b) => sum + b.amount,
+    );
+
     double totalWage = 0;
     for (final day in days) {
       final entry = entryForDay(dateOnly(day));
@@ -43,6 +57,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
         );
       }
     }
+    totalWage += totalBenefits;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -67,6 +82,10 @@ class SelectedDaysSummarySheet extends StatelessWidget {
           const SizedBox(height: 12),
           _OverallTotalCard(daysCount: days.length, totalWage: totalWage),
           const SizedBox(height: 10),
+          if (allBenefits.isNotEmpty) ...[
+            _BenefitsCard(benefits: allBenefits, label: l10n.benefits),
+            const SizedBox(height: 10),
+          ],
           Expanded(
             child: ListView.separated(
               itemCount: days.length,
@@ -347,6 +366,73 @@ class _OverallTotalCard extends StatelessWidget {
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BenefitsCard extends StatelessWidget {
+  const _BenefitsCard({required this.benefits, required this.label});
+
+  final List<Benefit> benefits;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final totalBenefits = benefits.fold<double>(0, (sum, b) => sum + b.amount);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: cs.outlineVariant),
+        color: Colors.white.withValues(alpha: 0.9),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: cs.primary.withValues(alpha: 0.10),
+            blurRadius: 14,
+            offset: const Offset(0, 7),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(
+                  label,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900),
+                ),
+                const Spacer(),
+                Text(
+                  money(totalBenefits),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ...benefits
+                .map(
+                  (benefit) => Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: _Line(
+                      label: benefit.name,
+                      expression: money(benefit.amount),
+                    ),
+                  ),
+                )
+                .toList(),
           ],
         ),
       ),

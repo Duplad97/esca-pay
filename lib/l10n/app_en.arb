@@ -149,6 +149,23 @@
   "satisfied": "Satisfied",
   "notSatisfied": "Not satisfied",
 
+  "benefits": "Other Benefits",
+  "benefitsSubtitle": "{count} benefits • {total} Ft total",
+  "@benefitsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "double", "format": "decimalPattern" }
+    }
+  },
+  "benefitsSheetEmpty": "No benefits yet.\nAdd benefits to track extra income.",
+  "benefitName": "Benefit name",
+  "benefitAmount": "+{amount} Ft",
+  "@benefitAmount": {
+    "placeholders": { "amount": { "type": "double", "format": "decimalPattern" } }
+  },
+  "amount": "Amount",
+  "add": "Add",
+
   "pickARoom": "Pick a room",
   "search": "Search",
   "jumpIn": "Jump-in game",

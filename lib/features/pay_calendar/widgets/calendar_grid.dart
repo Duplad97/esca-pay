@@ -87,64 +87,64 @@ class _CalendarGridState extends State<CalendarGrid> {
           children: <Widget>[
             Padding(
               padding: headerPadding,
-              child: Row(
-                children: <Widget>[
-                  if (!widget.multiSelectEnabled) ...<Widget>[
-                    FilledButton.tonalIcon(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onToday();
-                      },
-                      icon: const Icon(Icons.today),
-                      label: Text(l10n.today),
-                    ),
-                    const SizedBox(width: 10),
-                    FilledButton.tonalIcon(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onToggleMultiSelect();
-                        setState(() => _lastDragDayKey = null);
-                      },
-                      icon: const Icon(Icons.select_all),
-                      label: Text(l10n.select),
-                    ),
-                    const Spacer(),
-                  ] else ...<Widget>[
-                    Expanded(
-                      child: Text(
-                        l10n.selectedCount(widget.multiSelectedCount),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    if (!widget.multiSelectEnabled) ...<Widget>[
+                      FilledButton.tonalIcon(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onToday();
+                        },
+                        icon: const Icon(Icons.today),
+                        label: Text(l10n.today),
+                      ),
+                      const SizedBox(width: 10),
+                      FilledButton.tonalIcon(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onToggleMultiSelect();
+                          setState(() => _lastDragDayKey = null);
+                        },
+                        icon: const Icon(Icons.select_all),
+                        label: Text(l10n.select),
+                      ),
+                      const SizedBox(width: 10),
+                    ] else ...<Widget>[
+                      Text(
+                        widget.multiSelectedCount.toString(),
+                        style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.w900),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        HapticFeedback.selectionClick();
-                        widget.onClearMultiSelect();
-                      },
-                      child: Text(l10n.clear),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onShowMultiSelectSummary();
-                      },
-                      child: Text(l10n.summary),
-                    ),
-                    const SizedBox(width: 10),
-                    FilledButton.tonal(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onToggleMultiSelect();
-                        setState(() => _lastDragDayKey = null);
-                      },
-                      child: Text(l10n.done),
-                    ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onClearMultiSelect();
+                        },
+                        child: Text(l10n.clear),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onShowMultiSelectSummary();
+                        },
+                        child: Text(l10n.summary),
+                      ),
+                      const SizedBox(width: 10),
+                      FilledButton.tonal(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onToggleMultiSelect();
+                          setState(() => _lastDragDayKey = null);
+                        },
+                        child: Text(l10n.done),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
             const SizedBox(height: 10),

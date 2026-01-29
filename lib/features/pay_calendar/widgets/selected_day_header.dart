@@ -7,7 +7,7 @@ import '../../../shared/utils/money_format.dart';
 import '../../../shared/widgets/marquee_text.dart';
 import '../models/day_entry.dart';
 
-class SelectedDayHeader extends StatelessWidget {
+class SelectedDayHeader extends StatefulWidget {
   const SelectedDayHeader({
     super.key,
     required this.selectedDay,
@@ -17,6 +17,7 @@ class SelectedDayHeader extends StatelessWidget {
     required this.onNextDay,
     required this.onEditSessions,
     required this.onEditEvents,
+    required this.onEditBenefits,
     required this.onEditDay,
   });
 
@@ -27,16 +28,24 @@ class SelectedDayHeader extends StatelessWidget {
   final VoidCallback onNextDay;
   final VoidCallback onEditSessions;
   final VoidCallback onEditEvents;
+  final VoidCallback onEditBenefits;
   final VoidCallback onEditDay;
+
+  @override
+  State<SelectedDayHeader> createState() => _SelectedDayHeaderState();
+}
+
+class _SelectedDayHeaderState extends State<SelectedDayHeader> {
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final hours = entry?.hours ?? 0;
-    final rooms = entry?.rooms ?? 0;
-    final events = entry?.events.length ?? 0;
-    final hasEntry = !(entry == null || entry!.isEmpty);
+    final hours = widget.entry?.hours ?? 0;
+    final rooms = widget.entry?.rooms ?? 0;
+    final events = widget.entry?.events.length ?? 0;
+    final hasEntry = !(widget.entry == null || widget.entry!.isEmpty);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -61,7 +70,7 @@ class SelectedDayHeader extends StatelessWidget {
                   tooltip: l10n.previousDayTooltip,
                   onPressed: () {
                     HapticFeedback.selectionClick();
-                    onPrevDay();
+                    widget.onPrevDay();
                   },
                   icon: const Icon(Icons.chevron_left),
                 ),
@@ -76,7 +85,7 @@ class SelectedDayHeader extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       MarqueeText(
-                        selectedDayLabelL10n(context, selectedDay),
+                        selectedDayLabelL10n(context, widget.selectedDay),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w900),
                       ),
@@ -87,7 +96,7 @@ class SelectedDayHeader extends StatelessWidget {
                   tooltip: l10n.nextDayTooltip,
                   onPressed: () {
                     HapticFeedback.selectionClick();
-                    onNextDay();
+                    widget.onNextDay();
                   },
                   icon: const Icon(Icons.chevron_right),
                 ),
@@ -101,7 +110,7 @@ class SelectedDayHeader extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
                     child: Text(
-                      money(dayTotal),
+                      money(widget.dayTotal),
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.w900),
                     ),
@@ -126,57 +135,86 @@ class SelectedDayHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final isTight = constraints.maxWidth < 360;
-                return Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: _ActionButton(
-                        tonal: true,
-                        icon: Icons.badge,
-                        label: l10n.sessions,
-                        condensed: isTight,
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          onEditSessions();
-                        },
-                      ),
+            // Default buttons row: Sessions and Edit Day
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: _ActionButton(
+                    tonal: true,
+                    icon: Icons.badge,
+                    label: l10n.sessions,
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      widget.onEditSessions();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _ActionButton(
+                    tonal: false,
+                    icon: Icons.edit,
+                    label: l10n.dayShort,
+                    compact: true,
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      widget.onEditDay();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      _expanded ? Icons.expand_less : Icons.expand_more,
+                      size: 20,
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 2,
-                      child: _ActionButton(
-                        tonal: true,
-                        icon: Icons.event,
-                        label: l10n.events,
-                        condensed: isTight,
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          onEditEvents();
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 1,
-                      child: _ActionButton(
-                        tonal: false,
-                        icon: Icons.edit,
-                        label: l10n.dayShort,
-                        condensed: isTight,
-                        compact: true,
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          onEditDay();
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      setState(() => _expanded = !_expanded);
+                    },
+                    tooltip: _expanded ? l10n.close : 'More',
+                  ),
+                ),
+              ],
             ),
+            // Expanded buttons row: Events and Benefits
+            if (_expanded) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: _ActionButton(
+                      tonal: true,
+                      icon: Icons.event,
+                      label: l10n.events,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onEditEvents();
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ActionButton(
+                      tonal: true,
+                      icon: Icons.card_giftcard,
+                      label: l10n.benefits,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onEditBenefits();
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 48,
+                  ), // Match expand button width + spacing
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -195,7 +233,6 @@ class _ActionButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onPressed,
-    this.condensed = false,
     this.compact = false,
   });
 
@@ -203,26 +240,22 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onPressed;
-  final bool condensed;
   final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final style = FilledButton.styleFrom(
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? (condensed ? 8 : 12) : (condensed ? 8 : 10),
-        vertical: (condensed ? 6 : 8),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 10, vertical: 8),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      minimumSize: Size(0, (condensed ? 36 : 40)),
+      minimumSize: const Size(0, 40),
     );
 
     final child = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(icon, size: (condensed ? 14 : 16)),
+        Icon(icon, size: 16),
         const SizedBox(width: 6),
         Flexible(
           child: FittedBox(

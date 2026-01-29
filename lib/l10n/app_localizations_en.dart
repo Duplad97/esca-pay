@@ -314,6 +314,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notSatisfied => 'Not satisfied';
 
   @override
+  String get benefits => 'Other Benefits';
+
+  @override
+  String benefitsSubtitle(int count, double total) {
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$count benefits • $totalString Ft total';
+  }
+
+  @override
+  String get benefitsSheetEmpty =>
+      'No benefits yet.\nAdd benefits to track extra income.';
+
+  @override
+  String get benefitName => 'Benefit name';
+
+  @override
+  String benefitAmount(double amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '+$amountString Ft';
+  }
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get add => 'Add';
+
+  @override
   String get pickARoom => 'Pick a room';
 
   @override

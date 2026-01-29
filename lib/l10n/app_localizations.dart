@@ -656,6 +656,48 @@ abstract class AppLocalizations {
   /// **'Not satisfied'**
   String get notSatisfied;
 
+  /// No description provided for @benefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Benefits'**
+  String get benefits;
+
+  /// No description provided for @benefitsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} benefits • {total} Ft total'**
+  String benefitsSubtitle(int count, double total);
+
+  /// No description provided for @benefitsSheetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No benefits yet.\nAdd benefits to track extra income.'**
+  String get benefitsSheetEmpty;
+
+  /// No description provided for @benefitName.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefit name'**
+  String get benefitName;
+
+  /// No description provided for @benefitAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} Ft'**
+  String benefitAmount(double amount);
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
   /// No description provided for @pickARoom.
   ///
   /// In en, this message translates to:

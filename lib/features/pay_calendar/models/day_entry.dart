@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show TimeOfDay;
 
 import 'event.dart';
 import 'game_session.dart';
+import 'benefit.dart';
 
 class DayEntry {
   const DayEntry({
@@ -9,6 +10,7 @@ class DayEntry {
     required this.rooms,
     this.sessions = const <GameSession>[],
     this.events = const <Event>[],
+    this.benefits = const <Benefit>[],
     this.startTime,
     this.endTime,
   });
@@ -17,11 +19,16 @@ class DayEntry {
   final int rooms;
   final List<GameSession> sessions;
   final List<Event> events;
+  final List<Benefit> benefits;
   final TimeOfDay? startTime;
   final TimeOfDay? endTime;
 
   bool get isEmpty =>
-      hours <= 0 && rooms <= 0 && sessions.isEmpty && events.isEmpty;
+      hours <= 0 &&
+      rooms <= 0 &&
+      sessions.isEmpty &&
+      events.isEmpty &&
+      benefits.isEmpty;
 
   bool get hasTimeTracking => startTime != null && endTime != null;
 
@@ -47,9 +54,14 @@ class DayEntry {
     final jumpInCount = sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
+    final benefitsTotal = benefits.fold<double>(
+      0.0,
+      (sum, benefit) => sum + benefit.amount,
+    );
     return (hours * hourlyWage) +
         (rooms * perRoomBonus) +
         (jumpInCount * jumpInRate) +
-        (events.length * eventFine);
+        (events.length * eventFine) +
+        benefitsTotal;
   }
 }

@@ -316,6 +316,40 @@ class AppLocalizationsHu extends AppLocalizations {
   String get notSatisfied => 'Nem elégedett';
 
   @override
+  String get benefits => 'Egyéb juttatások';
+
+  @override
+  String benefitsSubtitle(int count, double total) {
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$count juttatás • $totalString Ft összesen';
+  }
+
+  @override
+  String get benefitsSheetEmpty =>
+      'Még nincsenek juttatások.\nAdj hozzá juttatásokat a extra jövedelem nyomon követéséhez.';
+
+  @override
+  String get benefitName => 'Juttatás neve';
+
+  @override
+  String benefitAmount(double amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '+$amountString Ft';
+  }
+
+  @override
+  String get amount => 'Összeg';
+
+  @override
+  String get add => 'Hozzáad';
+
+  @override
   String get pickARoom => 'Szoba választása';
 
   @override
