@@ -432,7 +432,7 @@ class _BenefitsCard extends StatelessWidget {
                     ),
                   ),
                 )
-                .toList(),
+                ,
           ],
         ),
       ),

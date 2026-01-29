@@ -48,7 +48,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   String? _localeCode;
 
   bool _scheduledReminder = false;
-  bool _forceShowReminderCheckbox = false;
+  final bool _forceShowReminderCheckbox = false;
   int _debugTapCount = 0;
 
   final Map<String, DayEntry> _entriesByDayKey = <String, DayEntry>{};
