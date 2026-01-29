@@ -659,11 +659,17 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialEventFine: _eventFine,
           initialWeekStartWeekday: _weekStartWeekday,
           initialLocaleCode: _localeCode,
+          storage: dayEntriesStorage,
         );
       },
     );
 
     if (!context.mounted) return;
+
+    // Check if we need to reload data (import might have happened)
+    _entriesByDayKey.clear();
+    _loadSavedDayEntries();
+
     if (result is! Rates) return;
     setState(() {
       _hourlyWage = result.hourlyWage;

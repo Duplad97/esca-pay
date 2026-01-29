@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' show Rect;
 
+import '../../../shared/services/backup_service.dart';
+import '../../../shared/storage/day_entries_storage.dart';
 import '../models/rates.dart';
 import 'money_field.dart';
 
@@ -15,6 +18,7 @@ class RatesSheet extends StatefulWidget {
     required this.initialEventFine,
     required this.initialWeekStartWeekday,
     required this.initialLocaleCode,
+    required this.storage,
   });
 
   final double initialHourlyWage;
@@ -23,6 +27,7 @@ class RatesSheet extends StatefulWidget {
   final double initialEventFine;
   final int initialWeekStartWeekday;
   final String? initialLocaleCode;
+  final DayEntriesStorage storage;
 
   @override
   State<RatesSheet> createState() => _RatesSheetState();
@@ -225,6 +230,170 @@ class _RatesSheetState extends State<RatesSheet> {
                         _localeCode = v == 'system' ? null : v;
                       });
                     },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _SettingsCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Data Backup',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Builder(
+                          builder: (BuildContext buttonContext) {
+                            return FilledButton.tonal(
+                              onPressed: () async {
+                                HapticFeedback.lightImpact();
+                                try {
+                                  final file = await BackupService(
+                                    widget.storage,
+                                  ).exportBackup();
+                                  if (mounted && file != null) {
+                                    // Get button position for iOS share sheet
+                                    final renderBox =
+                                        buttonContext.findRenderObject()
+                                            as RenderBox?;
+                                    final shareRect = renderBox != null
+                                        ? Rect.fromLTWH(
+                                            renderBox
+                                                .localToGlobal(Offset.zero)
+                                                .dx,
+                                            renderBox
+                                                .localToGlobal(Offset.zero)
+                                                .dy,
+                                            renderBox.size.width,
+                                            renderBox.size.height,
+                                          )
+                                        : null;
+
+                                    await BackupService(
+                                      widget.storage,
+                                    ).shareBackup(
+                                      file,
+                                      sharePositionOrigin: shareRect,
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Backup exported'),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Export failed: $e'),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.download, size: 18),
+                                  SizedBox(width: 8),
+                                  Text('Export'),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.tonal(
+                          onPressed: () async {
+                            HapticFeedback.lightImpact();
+                            final confirmed =
+                                await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Import Backup'),
+                                    content: const Text(
+                                      'This will replace all your current data with the data from the backup file. This cannot be undone.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, true),
+                                        child: const Text('Import'),
+                                      ),
+                                    ],
+                                  ),
+                                ) ??
+                                false;
+
+                            if (!confirmed || !mounted) return;
+
+                            try {
+                              final success = await BackupService(
+                                widget.storage,
+                              ).importBackup();
+                              if (mounted) {
+                                if (success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        'Backup imported successfully',
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                  // Notify parent to refresh data
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        'Import was cancelled',
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                }
+                              }
+                            } catch (e) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Import failed: $e'),
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.upload, size: 18),
+                              SizedBox(width: 8),
+                              Text('Import'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

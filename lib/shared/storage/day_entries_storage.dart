@@ -74,18 +74,27 @@ class DayEntriesStorage {
     required List<GameSession> sessions,
     required List<Event> events,
     required List<Benefit> benefits,
+    String? startTime,
+    String? endTime,
   }) async {
-    await _box?.put(dayKey, <String, dynamic>{
+    final data = <String, dynamic>{
       'hours': hours,
       'rooms': rooms,
       'sessions': sessions.map((s) => s.toJson()).toList(growable: false),
       'events': events.map((e) => e.toJson()).toList(growable: false),
       'benefits': benefits.map((b) => b.toJson()).toList(growable: false),
-    });
+    };
+    if (startTime != null) data['startTime'] = startTime;
+    if (endTime != null) data['endTime'] = endTime;
+    await _box?.put(dayKey, data);
   }
 
   Future<void> deleteEntry(String dayKey) async {
     await _box?.delete(dayKey);
+  }
+
+  Future<void> clearAll() async {
+    await _box?.clear();
   }
 
   List<GameSession> _parseSessions(dynamic raw) {
