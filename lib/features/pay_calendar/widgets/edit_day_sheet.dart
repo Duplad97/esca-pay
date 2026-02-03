@@ -22,6 +22,8 @@ class EditDaySheet extends StatefulWidget {
     required this.perRoomBonus,
     required this.jumpInRate,
     required this.eventFine,
+    this.initialStartTime,
+    this.initialEndTime,
   });
 
   final DateTime day;
@@ -33,6 +35,8 @@ class EditDaySheet extends StatefulWidget {
   final double perRoomBonus;
   final double jumpInRate;
   final double eventFine;
+  final TimeOfDay? initialStartTime;
+  final TimeOfDay? initialEndTime;
 
   @override
   State<EditDaySheet> createState() => _EditDaySheetState();
@@ -53,8 +57,9 @@ class _EditDaySheetState extends State<EditDaySheet> {
     _rooms = widget.initialRooms;
     _sessions = widget.initialSessions.toList(growable: true);
     _events = widget.initialEvents.toList(growable: true);
-    _startTime = const TimeOfDay(hour: 8, minute: 30);
-    _endTime = const TimeOfDay(hour: 16, minute: 0);
+    _startTime =
+        widget.initialStartTime ?? const TimeOfDay(hour: 8, minute: 30);
+    _endTime = widget.initialEndTime ?? const TimeOfDay(hour: 16, minute: 0);
   }
 
   @override

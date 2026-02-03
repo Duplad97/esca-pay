@@ -1,6 +1,5 @@
 import 'package:esca_pay/features/theme_selector/theme_selector_page.dart';
 import 'package:esca_pay/shared/themes/theme_manager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:esca_pay/l10n/app_localizations.dart';
 
@@ -432,6 +431,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           perRoomBonus: _perRoomBonus,
           jumpInRate: _jumpInRate,
           eventFine: _eventFine,
+          initialStartTime: existing?.startTime,
+          initialEndTime: existing?.endTime,
         );
       },
     );
