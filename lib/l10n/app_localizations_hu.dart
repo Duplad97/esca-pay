@@ -263,9 +263,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get remove => 'Törlés';
 
   @override
-  String get edit => 'Szerkesztés';
-
-  @override
   String get finishCurrentSessionFirst => 'Előbb fejezd be az aktuális játékot';
 
   @override
@@ -402,4 +399,84 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get weeklyPaymentSummaryCheckboxLabel =>
       'Elküldted a heti összegzésedet';
+
+  @override
+  String get paymentProfile => 'Fizetési profil';
+
+  @override
+  String get paymentProfiles => 'Fizetési profilok';
+
+  @override
+  String get createProfile => 'Profil létrehozása';
+
+  @override
+  String get editProfile => 'Profil szerkesztése';
+
+  @override
+  String get deleteProfile => 'Profil törlése';
+
+  @override
+  String get profileName => 'Profil neve';
+
+  @override
+  String get defaultProfile => 'Alapértelmezett profil';
+
+  @override
+  String get setAsDefault => 'Beállítás alapértelmezettként';
+
+  @override
+  String get profileCreated => 'Profil sikeresen létrehozva';
+
+  @override
+  String get profileUpdated => 'Profil sikeresen frissítve';
+
+  @override
+  String get profileDeleted => 'Profil sikeresen törölve';
+
+  @override
+  String get profileInUse => 'Ez a profil használatban van és nem törölhető';
+
+  @override
+  String get profileNameRequired => 'A profil neve szükséges';
+
+  @override
+  String get confirmDeleteProfile =>
+      'Biztosan törölni szeretnéd ezt a profilt?';
+
+  @override
+  String get noProfiles => 'Még nincsenek fizetési profilok';
+
+  @override
+  String get hourlyWageTitle => 'Órabér';
+
+  @override
+  String get perRoomBonusTitle => 'Szobabér';
+
+  @override
+  String get jumpInRateTitle => 'Beugró díj';
+
+  @override
+  String get eventFineTitle => 'Rendezvény bónusz';
+
+  @override
+  String get cancel => 'Mégsem';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get delete => 'Törlés';
+
+  @override
+  String get edit => 'Szerkesztés';
+
+  @override
+  String get continueLabel => 'Folytatás';
+
+  @override
+  String get manageProfilesHint =>
+      'Kezeld a fizetési profiljaidat a Fizetési profilok fülön.';
+
+  @override
+  String get selectProfile => 'Válassz profilt';
 }

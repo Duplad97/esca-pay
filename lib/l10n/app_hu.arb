@@ -150,7 +150,6 @@
     }
   },
   "remove": "Törlés",
-  "edit": "Szerkesztés",
   "finishCurrentSessionFirst": "Előbb fejezd be az aktuális játékot",
   "pickRoomNameToSave": "Válassz szobanevet a mentéshez",
   "pickTimeToSave": "Válassz időpontot a mentéshez",
@@ -200,5 +199,33 @@
   "weeklyPaymentSummaryDialogMessage": "Elküldted már a heti összegzésedet?",
   "weeklyPaymentSummaryDialogConfirm": "Elküldtem",
   "weeklyPaymentSummaryDialogCancel": "Még nem",
-  "weeklyPaymentSummaryCheckboxLabel": "Elküldted a heti összegzésedet"
+  "weeklyPaymentSummaryCheckboxLabel": "Elküldted a heti összegzésedet",
+
+  "paymentProfile": "Fizetési profil",
+  "paymentProfiles": "Fizetési profilok",
+  "createProfile": "Profil létrehozása",
+  "editProfile": "Profil szerkesztése",
+  "deleteProfile": "Profil törlése",
+  "profileName": "Profil neve",
+  "defaultProfile": "Alapértelmezett profil",
+  "setAsDefault": "Beállítás alapértelmezettként",
+  "profileCreated": "Profil sikeresen létrehozva",
+  "profileUpdated": "Profil sikeresen frissítve",
+  "profileDeleted": "Profil sikeresen törölve",
+  "profileInUse": "Ez a profil használatban van és nem törölhető",
+  "profileNameRequired": "A profil neve szükséges",
+  "confirmDeleteProfile": "Biztosan törölni szeretnéd ezt a profilt?",
+  "noProfiles": "Még nincsenek fizetési profilok",
+
+  "hourlyWageTitle": "Órabér",
+  "perRoomBonusTitle": "Szobabér",
+  "jumpInRateTitle": "Beugró díj",
+  "eventFineTitle": "Rendezvény bónusz",
+  "cancel": "Mégsem",
+  "ok": "OK",
+  "delete": "Törlés",
+  "edit": "Szerkesztés",
+  "continueLabel": "Folytatás",
+  "manageProfilesHint": "Kezeld a fizetési profiljaidat a Fizetési profilok fülön.",
+  "selectProfile": "Válassz profilt"
 }

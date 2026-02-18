@@ -4,9 +4,12 @@ import 'package:flutter/foundation.dart';
 
 import 'day_entries_storage.dart';
 import 'settings_storage.dart';
+import 'payment_profiles_storage.dart';
+import '../../features/pay_calendar/models/payment_profile.dart';
 
 final SettingsStorage settingsStorage = SettingsStorage();
 final DayEntriesStorage dayEntriesStorage = DayEntriesStorage();
+final PaymentProfilesStorage paymentProfilesStorage = PaymentProfilesStorage();
 
 Future<void> initStorage() async {
   try {
@@ -19,6 +22,11 @@ Future<void> initStorage() async {
     }
     rethrow;
   }
+
+  // Register adapters before initializing storages
+  Hive.registerAdapter(PaymentProfileAdapter());
+
   await settingsStorage.init();
   await dayEntriesStorage.init();
+  await paymentProfilesStorage.init();
 }

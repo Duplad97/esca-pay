@@ -7,24 +7,19 @@ import '../../../shared/utils/money_format.dart';
 import '../models/benefit.dart';
 import '../models/day_entry.dart';
 import '../models/game_session.dart';
+import '../models/rates.dart';
 
 class SelectedDaysSummarySheet extends StatelessWidget {
   const SelectedDaysSummarySheet({
     super.key,
     required this.selectedDays,
     required this.entryForDay,
-    required this.hourlyWage,
-    required this.perRoomBonus,
-    required this.jumpInRate,
-    required this.eventFine,
+    required this.ratesForEntry,
   });
 
   final List<DateTime> selectedDays;
   final DayEntry? Function(DateTime day) entryForDay;
-  final double hourlyWage;
-  final double perRoomBonus;
-  final double jumpInRate;
-  final double eventFine;
+  final Rates Function(DayEntry entry) ratesForEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +44,12 @@ class SelectedDaysSummarySheet extends StatelessWidget {
     for (final day in days) {
       final entry = entryForDay(dateOnly(day));
       if (entry != null) {
+        final rates = ratesForEntry(entry);
         totalWage += entry.earnings(
-          hourlyWage: hourlyWage,
-          perRoomBonus: perRoomBonus,
-          jumpInRate: jumpInRate,
-          eventFine: eventFine,
+          hourlyWage: rates.hourlyWage,
+          perRoomBonus: rates.perRoomBonus,
+          jumpInRate: rates.jumpInRate,
+          eventFine: rates.eventFine,
         );
       }
     }
@@ -95,6 +91,11 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                 final entry = entryForDay(day);
                 final hours = entry?.hours ?? 0;
                 final rooms = entry?.rooms ?? 0;
+                final rates = entry != null ? ratesForEntry(entry) : null;
+                final hourlyWage = rates?.hourlyWage ?? 0;
+                final perRoomBonus = rates?.perRoomBonus ?? 0;
+                final jumpInRate = rates?.jumpInRate ?? 0;
+                final eventFine = rates?.eventFine ?? 0;
                 final jumpInCount =
                     entry?.sessions
                         .where((s) => s.type == SessionType.jumpIn)
@@ -422,17 +423,15 @@ class _BenefitsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            ...benefits
-                .map(
-                  (benefit) => Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: _Line(
-                      label: benefit.name,
-                      expression: money(benefit.amount),
-                    ),
-                  ),
-                )
-                ,
+            ...benefits.map(
+              (benefit) => Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: _Line(
+                  label: benefit.name,
+                  expression: money(benefit.amount),
+                ),
+              ),
+            ),
           ],
         ),
       ),

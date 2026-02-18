@@ -128,7 +128,6 @@
     "placeholders": { "number": { "type": "int" } }
   },
   "remove": "Remove",
-  "edit": "Edit",
   "finishCurrentSessionFirst": "Finish the current session first",
   "pickRoomNameToSave": "Pick a room name to save this session",
   "pickTimeToSave": "Pick a time to save this session",
@@ -183,5 +182,33 @@
   "weeklyPaymentSummaryDialogMessage": "Have you sent your weekly payment summary to your manager?",
   "weeklyPaymentSummaryDialogConfirm": "Yes, I sent it",
   "weeklyPaymentSummaryDialogCancel": "Not yet",
-  "weeklyPaymentSummaryCheckboxLabel": "I sent my weekly summary"
+  "weeklyPaymentSummaryCheckboxLabel": "I sent my weekly summary",
+
+  "paymentProfile": "Payment Profile",
+  "paymentProfiles": "Payment Profiles",
+  "createProfile": "Create Profile",
+  "editProfile": "Edit Profile",
+  "deleteProfile": "Delete Profile",
+  "profileName": "Profile Name",
+  "defaultProfile": "Default Profile",
+  "setAsDefault": "Set as Default",
+  "profileCreated": "Profile created successfully",
+  "profileUpdated": "Profile updated successfully",
+  "profileDeleted": "Profile deleted successfully",
+  "profileInUse": "This profile is in use and cannot be deleted",
+  "profileNameRequired": "Profile name is required",
+  "confirmDeleteProfile": "Are you sure you want to delete this profile?",
+  "noProfiles": "No payment profiles yet",
+
+  "hourlyWageTitle": "Hourly Wage",
+  "perRoomBonusTitle": "Room Bonus",
+  "jumpInRateTitle": "Jump-in Rate",
+  "eventFineTitle": "Event Fine",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "delete": "Delete",
+  "edit": "Edit",
+  "continueLabel": "Continue",
+  "manageProfilesHint": "Manage your payment profiles in the Payment profiles tab.",
+  "selectProfile": "Select a profile"
 }

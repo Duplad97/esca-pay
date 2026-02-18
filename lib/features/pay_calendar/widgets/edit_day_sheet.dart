@@ -7,6 +7,7 @@ import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
 import '../models/event.dart';
 import '../models/game_session.dart';
+import '../models/payment_profile.dart';
 import 'stepper_row.dart';
 import 'time_picker_row.dart';
 
@@ -24,6 +25,9 @@ class EditDaySheet extends StatefulWidget {
     required this.eventFine,
     this.initialStartTime,
     this.initialEndTime,
+    this.availableProfiles = const <PaymentProfile>[],
+    this.initialProfileId,
+    this.defaultProfileId,
   });
 
   final DateTime day;
@@ -37,6 +41,9 @@ class EditDaySheet extends StatefulWidget {
   final double eventFine;
   final TimeOfDay? initialStartTime;
   final TimeOfDay? initialEndTime;
+  final List<PaymentProfile> availableProfiles;
+  final String? initialProfileId;
+  final String? defaultProfileId;
 
   @override
   State<EditDaySheet> createState() => _EditDaySheetState();
@@ -49,6 +56,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
   late List<Event> _events;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
+  late String? _selectedProfileId;
 
   @override
   void initState() {
@@ -60,6 +68,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
     _startTime =
         widget.initialStartTime ?? const TimeOfDay(hour: 8, minute: 30);
     _endTime = widget.initialEndTime ?? const TimeOfDay(hour: 16, minute: 0);
+    // Use initialProfileId if set, otherwise use default profile ID
+    _selectedProfileId = widget.initialProfileId ?? widget.defaultProfileId;
   }
 
   @override
@@ -76,6 +86,89 @@ class _EditDaySheetState extends State<EditDaySheet> {
     }
   }
 
+  Widget _buildProfileSelector() {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    PaymentProfile? selectedProfile;
+    if (_selectedProfileId != null) {
+      for (final profile in widget.availableProfiles) {
+        if (profile.id == _selectedProfileId) {
+          selectedProfile = profile;
+          break;
+        }
+      }
+    }
+
+    final displayName = selectedProfile?.name ?? l10n.selectProfile;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.paymentProfile,
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+        const SizedBox(height: 4),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final menuWidth = constraints.maxWidth;
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: colorScheme.outlineVariant),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: PopupMenuButton<String?>(
+                position: PopupMenuPosition.under,
+                constraints: BoxConstraints.tightFor(width: menuWidth),
+                onOpened: () {
+                  HapticFeedback.selectionClick();
+                },
+                onSelected: (value) {
+                  HapticFeedback.selectionClick();
+                  setState(() => _selectedProfileId = value);
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<String?>>[
+                      for (final profile in widget.availableProfiles)
+                        PopupMenuItem<String?>(
+                          value: profile.id,
+                          child: SizedBox(
+                            width: menuWidth,
+                            child: Text(profile.name),
+                          ),
+                        ),
+                    ],
+                child: SizedBox(
+                  width: menuWidth,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          displayName,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Icon(
+                          Icons.expand_more,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -85,11 +178,28 @@ class _EditDaySheetState extends State<EditDaySheet> {
     final jumpInCount = _sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
+    double hourlyWage = widget.hourlyWage;
+    double perRoomBonus = widget.perRoomBonus;
+    double jumpInRate = widget.jumpInRate;
+    double eventFine = widget.eventFine;
+
+    if (_selectedProfileId != null) {
+      for (final profile in widget.availableProfiles) {
+        if (profile.id == _selectedProfileId) {
+          hourlyWage = profile.hourlyWage;
+          perRoomBonus = profile.perRoomBonus;
+          jumpInRate = profile.jumpInRate;
+          eventFine = profile.eventFine;
+          break;
+        }
+      }
+    }
+
     final earnings =
-        (_hours * widget.hourlyWage) +
-        (_rooms * widget.perRoomBonus) +
-        (jumpInCount * widget.jumpInRate) +
-        (_events.length * widget.eventFine);
+        (_hours * hourlyWage) +
+        (_rooms * perRoomBonus) +
+        (jumpInCount * jumpInRate) +
+        (_events.length * eventFine);
     final roomsMismatch =
         normalSessionsCount > 0 && _rooms != normalSessionsCount;
 
@@ -124,6 +234,10 @@ class _EditDaySheetState extends State<EditDaySheet> {
               ],
             ),
             const SizedBox(height: 14),
+            if (widget.availableProfiles.isNotEmpty) ...<Widget>[
+              _buildProfileSelector(),
+              const SizedBox(height: 14),
+            ],
             TimePickerRow(
               title: l10n.startTimeTitle,
               subtitle: l10n.startTimeSubtitle,
@@ -222,6 +336,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         events: _events,
                         startTime: _startTime,
                         endTime: _endTime,
+                        profileId: _selectedProfileId,
                       ),
                     );
                   },

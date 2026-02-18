@@ -11,6 +11,7 @@ class StoredDayEntry {
     required this.sessions,
     required this.events,
     required this.benefits,
+    this.profileId,
   });
 
   final double hours;
@@ -18,6 +19,7 @@ class StoredDayEntry {
   final List<GameSession> sessions;
   final List<Event> events;
   final List<Benefit> benefits;
+  final String? profileId;
 }
 
 class DayEntriesStorage {
@@ -48,6 +50,7 @@ class DayEntriesStorage {
       final sessions = _parseSessions(v['sessions']);
       final events = _parseEvents(v['events']);
       final benefits = _parseBenefits(v['benefits']);
+      final profileId = v['profileId'] as String?;
       if (hours <= 0 &&
           rooms <= 0 &&
           sessions.isEmpty &&
@@ -62,6 +65,7 @@ class DayEntriesStorage {
         sessions: sessions,
         events: events,
         benefits: benefits,
+        profileId: profileId,
       );
     }
     return result;
@@ -76,6 +80,7 @@ class DayEntriesStorage {
     required List<Benefit> benefits,
     String? startTime,
     String? endTime,
+    String? profileId,
   }) async {
     final data = <String, dynamic>{
       'hours': hours,
@@ -86,6 +91,7 @@ class DayEntriesStorage {
     };
     if (startTime != null) data['startTime'] = startTime;
     if (endTime != null) data['endTime'] = endTime;
+    if (profileId != null) data['profileId'] = profileId;
     await _box?.put(dayKey, data);
   }
 
@@ -125,5 +131,36 @@ class DayEntriesStorage {
       if (b != null) benefits.add(b);
     }
     return benefits;
+  }
+
+  /// Check if any day entries use a specific profile ID
+  bool isProfileIdInUse(String profileId) {
+    final box = _box;
+    if (box == null) return false;
+
+    for (final dynamic v in box.values) {
+      if (v is Map && v['profileId'] == profileId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Associate all day entries without a profileId to a specific profile
+  Future<void> associateUnassignedDaysWithProfile(String profileId) async {
+    final box = _box;
+    if (box == null) return;
+
+    for (final dynamic k in box.keys) {
+      if (k is! String) continue;
+      final v = box.get(k);
+      if (v is! Map) continue;
+
+      // Only update if profileId is not already set
+      if (v['profileId'] == null) {
+        v['profileId'] = profileId;
+        await box.put(k, v);
+      }
+    }
   }
 }

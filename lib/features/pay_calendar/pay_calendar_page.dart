@@ -13,6 +13,7 @@ import 'models/day_entry.dart';
 import 'models/event.dart';
 import 'models/game_session.dart';
 import 'models/benefit.dart';
+import 'models/payment_profile.dart';
 import 'models/rates.dart';
 import 'widgets/calendar_grid.dart';
 import 'widgets/edit_day_sheet.dart';
@@ -45,6 +46,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
   double _eventFine = 5000.0;
   int _weekStartWeekday = DateTime.monday;
   String? _localeCode;
+  List<PaymentProfile> _paymentProfiles = <PaymentProfile>[];
+  String? _defaultProfileId;
 
   bool _scheduledReminder = false;
   final bool _forceShowReminderCheckbox = false;
@@ -57,6 +60,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     super.initState();
     _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
     _loadSavedRates();
+    _loadPaymentProfiles();
     _loadSavedDayEntries();
 
     // Check if confirmation has expired (from previous day) and reset if needed
@@ -109,6 +113,23 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     });
   }
 
+  void _loadPaymentProfiles() {
+    final profiles = paymentProfilesStorage.loadAll();
+
+    // Load default profile ID asynchronously
+    paymentProfilesStorage.getDefaultProfileId().then((defaultId) {
+      if (mounted) {
+        setState(() {
+          _defaultProfileId = defaultId;
+        });
+      }
+    });
+
+    setState(() {
+      _paymentProfiles = profiles;
+    });
+  }
+
   void _loadSavedDayEntries() {
     final stored = dayEntriesStorage.loadAll();
     if (stored.isEmpty) return;
@@ -120,6 +141,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           sessions: entry.value.sessions,
           events: entry.value.events,
           benefits: entry.value.benefits,
+          profileId: entry.value.profileId,
         );
       }
     });
@@ -130,6 +152,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(gradient: themeManager.currentTheme.gradient),
         child: SafeArea(
@@ -354,10 +377,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         return SelectedDaysSummarySheet(
           selectedDays: days,
           entryForDay: _entryForDay,
-          hourlyWage: _hourlyWage,
-          perRoomBonus: _perRoomBonus,
-          jumpInRate: _jumpInRate,
-          eventFine: _eventFine,
+          ratesForEntry: _ratesForEntry,
         );
       },
     );
@@ -369,14 +389,42 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     });
   }
 
+  Rates _ratesForEntry(DayEntry entry) {
+    double hourlyWage = _hourlyWage;
+    double perRoomBonus = _perRoomBonus;
+    double jumpInRate = _jumpInRate;
+    double eventFine = _eventFine;
+
+    if (entry.profileId != null) {
+      final profile = paymentProfilesStorage.getProfile(entry.profileId!);
+      if (profile != null) {
+        hourlyWage = profile.hourlyWage;
+        perRoomBonus = profile.perRoomBonus;
+        jumpInRate = profile.jumpInRate;
+        eventFine = profile.eventFine;
+      }
+    }
+
+    return Rates(
+      hourlyWage: hourlyWage,
+      perRoomBonus: perRoomBonus,
+      jumpInRate: jumpInRate,
+      eventFine: eventFine,
+      weekStartWeekday: _weekStartWeekday,
+      localeCode: _localeCode,
+    );
+  }
+
   double _earningsForDay(DateTime day) {
     final entry = _entriesByDayKey[dayKey(day)];
     if (entry == null) return 0;
+
+    final rates = _ratesForEntry(entry);
     return entry.earnings(
-      hourlyWage: _hourlyWage,
-      perRoomBonus: _perRoomBonus,
-      jumpInRate: _jumpInRate,
-      eventFine: _eventFine,
+      hourlyWage: rates.hourlyWage,
+      perRoomBonus: rates.perRoomBonus,
+      jumpInRate: rates.jumpInRate,
+      eventFine: rates.eventFine,
     );
   }
 
@@ -409,6 +457,16 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     DateTime day,
     ColorScheme colorScheme,
   ) async {
+    final latestProfiles = paymentProfilesStorage.loadAll();
+    final latestDefaultProfileId = await paymentProfilesStorage
+        .getDefaultProfileId();
+    if (mounted) {
+      setState(() {
+        _paymentProfiles = latestProfiles;
+        _defaultProfileId = latestDefaultProfileId;
+      });
+    }
+
     final key = dayKey(day);
     final existing = _entriesByDayKey[key];
     final result = await showModalBottomSheet<DayEntry?>(
@@ -433,6 +491,9 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           eventFine: _eventFine,
           initialStartTime: existing?.startTime,
           initialEndTime: existing?.endTime,
+          availableProfiles: _paymentProfiles,
+          initialProfileId: existing?.profileId,
+          defaultProfileId: _defaultProfileId,
         );
       },
     );
@@ -457,6 +518,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       sessions: result.sessions,
       events: result.events,
       benefits: result.benefits,
+      profileId: result.profileId,
     );
   }
 
@@ -485,6 +547,9 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: sessions,
         events: current?.events ?? const [],
         benefits: current?.benefits ?? const [],
+        startTime: current?.startTime,
+        endTime: current?.endTime,
+        profileId: current?.profileId,
       );
 
       if (!mounted) return;
@@ -506,6 +571,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        profileId: nextEntry.profileId,
       );
     }
 
@@ -542,6 +608,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         benefits: current?.benefits ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
+        profileId: current?.profileId,
       );
 
       if (!mounted) return;
@@ -563,6 +630,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        profileId: nextEntry.profileId,
       );
     }
 
@@ -599,6 +667,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         benefits: benefits,
         startTime: current?.startTime,
         endTime: current?.endTime,
+        profileId: current?.profileId,
       );
 
       if (!mounted) return;
@@ -620,6 +689,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        profileId: nextEntry.profileId,
       );
     }
 
@@ -661,6 +731,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialWeekStartWeekday: _weekStartWeekday,
           initialLocaleCode: _localeCode,
           storage: dayEntriesStorage,
+          paymentProfilesStorage: paymentProfilesStorage,
         );
       },
     );

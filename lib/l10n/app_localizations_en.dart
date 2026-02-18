@@ -261,9 +261,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remove => 'Remove';
 
   @override
-  String get edit => 'Edit';
-
-  @override
   String get finishCurrentSessionFirst => 'Finish the current session first';
 
   @override
@@ -399,4 +396,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weeklyPaymentSummaryCheckboxLabel => 'I sent my weekly summary';
+
+  @override
+  String get paymentProfile => 'Payment Profile';
+
+  @override
+  String get paymentProfiles => 'Payment Profiles';
+
+  @override
+  String get createProfile => 'Create Profile';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get deleteProfile => 'Delete Profile';
+
+  @override
+  String get profileName => 'Profile Name';
+
+  @override
+  String get defaultProfile => 'Default Profile';
+
+  @override
+  String get setAsDefault => 'Set as Default';
+
+  @override
+  String get profileCreated => 'Profile created successfully';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get profileDeleted => 'Profile deleted successfully';
+
+  @override
+  String get profileInUse => 'This profile is in use and cannot be deleted';
+
+  @override
+  String get profileNameRequired => 'Profile name is required';
+
+  @override
+  String get confirmDeleteProfile =>
+      'Are you sure you want to delete this profile?';
+
+  @override
+  String get noProfiles => 'No payment profiles yet';
+
+  @override
+  String get hourlyWageTitle => 'Hourly Wage';
+
+  @override
+  String get perRoomBonusTitle => 'Room Bonus';
+
+  @override
+  String get jumpInRateTitle => 'Jump-in Rate';
+
+  @override
+  String get eventFineTitle => 'Event Fine';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get manageProfilesHint =>
+      'Manage your payment profiles in the Payment profiles tab.';
+
+  @override
+  String get selectProfile => 'Select a profile';
 }

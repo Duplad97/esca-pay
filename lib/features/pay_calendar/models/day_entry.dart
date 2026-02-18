@@ -13,6 +13,7 @@ class DayEntry {
     this.benefits = const <Benefit>[],
     this.startTime,
     this.endTime,
+    this.profileId,
   });
 
   final double hours;
@@ -22,6 +23,7 @@ class DayEntry {
   final List<Benefit> benefits;
   final TimeOfDay? startTime;
   final TimeOfDay? endTime;
+  final String? profileId;
 
   bool get isEmpty =>
       hours <= 0 &&

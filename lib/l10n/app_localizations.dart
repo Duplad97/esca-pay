@@ -554,12 +554,6 @@ abstract class AppLocalizations {
   /// **'Remove'**
   String get remove;
 
-  /// No description provided for @edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
   /// No description provided for @finishCurrentSessionFirst.
   ///
   /// In en, this message translates to:
@@ -799,6 +793,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I sent my weekly summary'**
   String get weeklyPaymentSummaryCheckboxLabel;
+
+  /// No description provided for @paymentProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Profile'**
+  String get paymentProfile;
+
+  /// No description provided for @paymentProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Profiles'**
+  String get paymentProfiles;
+
+  /// No description provided for @createProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Profile'**
+  String get createProfile;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @deleteProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Profile'**
+  String get deleteProfile;
+
+  /// No description provided for @profileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Name'**
+  String get profileName;
+
+  /// No description provided for @defaultProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Profile'**
+  String get defaultProfile;
+
+  /// No description provided for @setAsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as Default'**
+  String get setAsDefault;
+
+  /// No description provided for @profileCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile created successfully'**
+  String get profileCreated;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdated;
+
+  /// No description provided for @profileDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile deleted successfully'**
+  String get profileDeleted;
+
+  /// No description provided for @profileInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile is in use and cannot be deleted'**
+  String get profileInUse;
+
+  /// No description provided for @profileNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile name is required'**
+  String get profileNameRequired;
+
+  /// No description provided for @confirmDeleteProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this profile?'**
+  String get confirmDeleteProfile;
+
+  /// No description provided for @noProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment profiles yet'**
+  String get noProfiles;
+
+  /// No description provided for @hourlyWageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hourly Wage'**
+  String get hourlyWageTitle;
+
+  /// No description provided for @perRoomBonusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Bonus'**
+  String get perRoomBonusTitle;
+
+  /// No description provided for @jumpInRateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump-in Rate'**
+  String get jumpInRateTitle;
+
+  /// No description provided for @eventFineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Fine'**
+  String get eventFineTitle;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueLabel;
+
+  /// No description provided for @manageProfilesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your payment profiles in the Payment profiles tab.'**
+  String get manageProfilesHint;
+
+  /// No description provided for @selectProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a profile'**
+  String get selectProfile;
 }
 
 class _AppLocalizationsDelegate
