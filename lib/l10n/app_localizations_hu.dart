@@ -341,6 +341,34 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String get deductions => 'Levonások';
+
+  @override
+  String deductionsSubtitle(int count, double total) {
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$count levonás • $totalString Ft összesen';
+  }
+
+  @override
+  String get deductionsSheetEmpty =>
+      'Még nincsenek levonások.\nAdj hozzá levonásokat a bércsökkentések nyomon követéséhez.';
+
+  @override
+  String get deductionName => 'Levonás neve';
+
+  @override
+  String deductionAmount(double amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '-$amountString Ft';
+  }
+
+  @override
   String get amount => 'Összeg';
 
   @override

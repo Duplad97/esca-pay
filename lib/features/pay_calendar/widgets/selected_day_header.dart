@@ -18,6 +18,7 @@ class SelectedDayHeader extends StatefulWidget {
     required this.onEditSessions,
     required this.onEditEvents,
     required this.onEditBenefits,
+    required this.onEditDeductions,
     required this.onEditDay,
   });
 
@@ -29,6 +30,7 @@ class SelectedDayHeader extends StatefulWidget {
   final VoidCallback onEditSessions;
   final VoidCallback onEditEvents;
   final VoidCallback onEditBenefits;
+  final VoidCallback onEditDeductions;
   final VoidCallback onEditDay;
 
   @override
@@ -181,7 +183,7 @@ class _SelectedDayHeaderState extends State<SelectedDayHeader> {
                 ),
               ],
             ),
-            // Expanded buttons row: Events and Benefits
+            // Expanded buttons row: Events, Benefits, and Deductions
             if (_expanded) ...[
               const SizedBox(height: 8),
               Row(
@@ -212,6 +214,22 @@ class _SelectedDayHeaderState extends State<SelectedDayHeader> {
                   const SizedBox(
                     width: 48,
                   ), // Match expand button width + spacing
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: <Widget>[
+                  IntrinsicWidth(
+                    child: _ActionButton(
+                      tonal: true,
+                      icon: Icons.remove_circle_outline,
+                      label: l10n.deductions,
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onEditDeductions();
+                      },
+                    ),
+                  ),
                 ],
               ),
             ],

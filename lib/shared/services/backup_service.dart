@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../features/pay_calendar/models/benefit.dart';
+import '../../features/pay_calendar/models/deduction.dart';
 import '../../features/pay_calendar/models/event.dart';
 import '../../features/pay_calendar/models/game_session.dart';
 import '../storage/day_entries_storage.dart';
@@ -125,6 +126,13 @@ class BackupService {
                 .toList() ??
             [];
 
+        final deductions =
+            (data['deductions'] as List<dynamic>?)
+                ?.map((d) => Deduction.fromJson(d as Map<String, dynamic>))
+                .whereType<Deduction>()
+                .toList() ??
+            [];
+
         await _storage.setEntry(
           dayKey: dayKey,
           hours: (data['hours'] as num?)?.toDouble() ?? 0.0,
@@ -132,6 +140,7 @@ class BackupService {
           sessions: sessions,
           events: events,
           benefits: benefits,
+          deductions: deductions,
         );
       }
 

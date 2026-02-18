@@ -13,12 +13,14 @@ import 'models/day_entry.dart';
 import 'models/event.dart';
 import 'models/game_session.dart';
 import 'models/benefit.dart';
+import 'models/deduction.dart';
 import 'models/payment_profile.dart';
 import 'models/rates.dart';
 import 'widgets/calendar_grid.dart';
 import 'widgets/edit_day_sheet.dart';
 import 'widgets/edit_events_sheet.dart';
 import 'widgets/edit_benefits_sheet.dart';
+import 'widgets/edit_deductions_sheet.dart';
 import 'widgets/edit_sessions_sheet.dart';
 import 'widgets/rates_sheet.dart';
 import 'widgets/selected_day_header.dart';
@@ -141,6 +143,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           sessions: entry.value.sessions,
           events: entry.value.events,
           benefits: entry.value.benefits,
+          deductions: entry.value.deductions,
           profileId: entry.value.profileId,
         );
       }
@@ -252,6 +255,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                                   _openEventsSheet(context, _selectedDay),
                               onEditBenefits: () =>
                                   _openBenefitsSheet(context, _selectedDay),
+                              onEditDeductions: () =>
+                                  _openDeductionsSheet(context, _selectedDay),
                               onEditDay: () => _openEditSheet(
                                 context,
                                 _selectedDay,
@@ -485,6 +490,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           initialRooms: existing?.rooms ?? 0,
           initialSessions: existing?.sessions ?? const [],
           initialEvents: existing?.events ?? const [],
+          initialBenefits: existing?.benefits ?? const [],
+          initialDeductions: existing?.deductions ?? const [],
           hourlyWage: _hourlyWage,
           perRoomBonus: _perRoomBonus,
           jumpInRate: _jumpInRate,
@@ -518,6 +525,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       sessions: result.sessions,
       events: result.events,
       benefits: result.benefits,
+      deductions: result.deductions,
       profileId: result.profileId,
     );
   }
@@ -547,6 +555,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: sessions,
         events: current?.events ?? const [],
         benefits: current?.benefits ?? const [],
+        deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
         profileId: current?.profileId,
@@ -571,6 +580,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        deductions: nextEntry.deductions,
         profileId: nextEntry.profileId,
       );
     }
@@ -606,6 +616,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: current?.sessions ?? const [],
         events: events,
         benefits: current?.benefits ?? const [],
+        deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
         profileId: current?.profileId,
@@ -630,6 +641,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        deductions: nextEntry.deductions,
         profileId: nextEntry.profileId,
       );
     }
@@ -665,6 +677,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: current?.sessions ?? const [],
         events: current?.events ?? const [],
         benefits: benefits,
+        deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
         profileId: current?.profileId,
@@ -689,6 +702,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         sessions: nextEntry.sessions,
         events: nextEntry.events,
         benefits: nextEntry.benefits,
+        deductions: nextEntry.deductions,
         profileId: nextEntry.profileId,
       );
     }
@@ -708,6 +722,67 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     ).then((value) {
       if (value == null) return;
       persistBenefits(value);
+    });
+  }
+
+  Future<void> _openDeductionsSheet(BuildContext context, DateTime day) async {
+    final key = dayKey(day);
+    final existing = _entriesByDayKey[key];
+    final initial = existing?.deductions ?? const <Deduction>[];
+
+    void persistDeductions(List<Deduction> deductions) async {
+      final current = _entriesByDayKey[key];
+      final nextEntry = DayEntry(
+        hours: current?.hours ?? 0,
+        rooms: current?.rooms ?? 0,
+        sessions: current?.sessions ?? const [],
+        events: current?.events ?? const [],
+        benefits: current?.benefits ?? const [],
+        deductions: deductions,
+        startTime: current?.startTime,
+        endTime: current?.endTime,
+        profileId: current?.profileId,
+      );
+
+      if (!mounted) return;
+      if (nextEntry.isEmpty) {
+        setState(() {
+          _entriesByDayKey.remove(key);
+        });
+        await dayEntriesStorage.deleteEntry(key);
+        return;
+      }
+
+      setState(() {
+        _entriesByDayKey[key] = nextEntry;
+      });
+      await dayEntriesStorage.setEntry(
+        dayKey: key,
+        hours: nextEntry.hours,
+        rooms: nextEntry.rooms,
+        sessions: nextEntry.sessions,
+        events: nextEntry.events,
+        benefits: nextEntry.benefits,
+        deductions: nextEntry.deductions,
+        profileId: nextEntry.profileId,
+      );
+    }
+
+    await showModalBottomSheet<List<Deduction>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return EditDeductionsSheet(initialDeductions: initial);
+      },
+    ).then((value) {
+      if (value == null) return;
+      persistDeductions(value);
     });
   }
 

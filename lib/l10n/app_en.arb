@@ -162,6 +162,22 @@
   "@benefitAmount": {
     "placeholders": { "amount": { "type": "double", "format": "decimalPattern" } }
   },
+  
+  "deductions": "Deductions",
+  "deductionsSubtitle": "{count} deductions • {total} Ft total",
+  "@deductionsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "double", "format": "decimalPattern" }
+    }
+  },
+  "deductionsSheetEmpty": "No deductions yet.\nAdd deductions to track wage reductions.",
+  "deductionName": "Deduction name",
+  "deductionAmount": "-{amount} Ft",
+  "@deductionAmount": {
+    "placeholders": { "amount": { "type": "double", "format": "decimalPattern" } }
+  },
+  
   "amount": "Amount",
   "add": "Add",
 

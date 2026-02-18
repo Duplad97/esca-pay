@@ -680,6 +680,36 @@ abstract class AppLocalizations {
   /// **'+{amount} Ft'**
   String benefitAmount(double amount);
 
+  /// No description provided for @deductions.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductions'**
+  String get deductions;
+
+  /// No description provided for @deductionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} deductions • {total} Ft total'**
+  String deductionsSubtitle(int count, double total);
+
+  /// No description provided for @deductionsSheetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No deductions yet.\nAdd deductions to track wage reductions.'**
+  String get deductionsSheetEmpty;
+
+  /// No description provided for @deductionName.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduction name'**
+  String get deductionName;
+
+  /// No description provided for @deductionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'-{amount} Ft'**
+  String deductionAmount(double amount);
+
   /// No description provided for @amount.
   ///
   /// In en, this message translates to:

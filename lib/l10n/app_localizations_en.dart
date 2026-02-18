@@ -339,6 +339,34 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get deductions => 'Deductions';
+
+  @override
+  String deductionsSubtitle(int count, double total) {
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$count deductions • $totalString Ft total';
+  }
+
+  @override
+  String get deductionsSheetEmpty =>
+      'No deductions yet.\nAdd deductions to track wage reductions.';
+
+  @override
+  String get deductionName => 'Deduction name';
+
+  @override
+  String deductionAmount(double amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '-$amountString Ft';
+  }
+
+  @override
   String get amount => 'Amount';
 
   @override

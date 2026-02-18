@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import '../../features/pay_calendar/models/event.dart';
 import '../../features/pay_calendar/models/game_session.dart';
 import '../../features/pay_calendar/models/benefit.dart';
+import '../../features/pay_calendar/models/deduction.dart';
 
 class StoredDayEntry {
   const StoredDayEntry({
@@ -11,6 +12,7 @@ class StoredDayEntry {
     required this.sessions,
     required this.events,
     required this.benefits,
+    required this.deductions,
     this.profileId,
   });
 
@@ -19,6 +21,7 @@ class StoredDayEntry {
   final List<GameSession> sessions;
   final List<Event> events;
   final List<Benefit> benefits;
+  final List<Deduction> deductions;
   final String? profileId;
 }
 
@@ -50,12 +53,14 @@ class DayEntriesStorage {
       final sessions = _parseSessions(v['sessions']);
       final events = _parseEvents(v['events']);
       final benefits = _parseBenefits(v['benefits']);
+      final deductions = _parseDeductions(v['deductions']);
       final profileId = v['profileId'] as String?;
       if (hours <= 0 &&
           rooms <= 0 &&
           sessions.isEmpty &&
           events.isEmpty &&
-          benefits.isEmpty) {
+          benefits.isEmpty &&
+          deductions.isEmpty) {
         continue;
       }
 
@@ -65,6 +70,7 @@ class DayEntriesStorage {
         sessions: sessions,
         events: events,
         benefits: benefits,
+        deductions: deductions,
         profileId: profileId,
       );
     }
@@ -78,6 +84,7 @@ class DayEntriesStorage {
     required List<GameSession> sessions,
     required List<Event> events,
     required List<Benefit> benefits,
+    required List<Deduction> deductions,
     String? startTime,
     String? endTime,
     String? profileId,
@@ -88,6 +95,7 @@ class DayEntriesStorage {
       'sessions': sessions.map((s) => s.toJson()).toList(growable: false),
       'events': events.map((e) => e.toJson()).toList(growable: false),
       'benefits': benefits.map((b) => b.toJson()).toList(growable: false),
+      'deductions': deductions.map((d) => d.toJson()).toList(growable: false),
     };
     if (startTime != null) data['startTime'] = startTime;
     if (endTime != null) data['endTime'] = endTime;
@@ -131,6 +139,16 @@ class DayEntriesStorage {
       if (b != null) benefits.add(b);
     }
     return benefits;
+  }
+
+  List<Deduction> _parseDeductions(dynamic raw) {
+    if (raw is! List) return const <Deduction>[];
+    final deductions = <Deduction>[];
+    for (final item in raw) {
+      final d = Deduction.fromJson(item);
+      if (d != null) deductions.add(d);
+    }
+    return deductions;
   }
 
   /// Check if any day entries use a specific profile ID

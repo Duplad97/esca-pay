@@ -179,6 +179,13 @@
   "benefitsSheetEmpty": "Még nincsenek juttatások.\nAdj hozzá juttatásokat a extra jövedelem nyomon követéséhez.",
   "benefitName": "Juttatás neve",
   "benefitAmount": "+{amount} Ft",
+  
+  "deductions": "Levonások",
+  "deductionsSubtitle": "{count} levonás • {total} Ft összesen",
+  "deductionsSheetEmpty": "Még nincsenek levonások.\nAdj hozzá levonásokat a bércsökkentések nyomon követéséhez.",
+  "deductionName": "Levonás neve",
+  "deductionAmount": "-{amount} Ft",
+  
   "amount": "Összeg",
   "add": "Hozzáad",
   

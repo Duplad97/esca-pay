@@ -7,6 +7,8 @@ import '../../../shared/utils/money_format.dart';
 import '../models/day_entry.dart';
 import '../models/event.dart';
 import '../models/game_session.dart';
+import '../models/benefit.dart';
+import '../models/deduction.dart';
 import '../models/payment_profile.dart';
 import 'stepper_row.dart';
 import 'time_picker_row.dart';
@@ -19,6 +21,8 @@ class EditDaySheet extends StatefulWidget {
     required this.initialRooms,
     required this.initialSessions,
     required this.initialEvents,
+    this.initialBenefits = const <Benefit>[],
+    this.initialDeductions = const <Deduction>[],
     required this.hourlyWage,
     required this.perRoomBonus,
     required this.jumpInRate,
@@ -35,6 +39,8 @@ class EditDaySheet extends StatefulWidget {
   final int initialRooms;
   final List<GameSession> initialSessions;
   final List<Event> initialEvents;
+  final List<Benefit> initialBenefits;
+  final List<Deduction> initialDeductions;
   final double hourlyWage;
   final double perRoomBonus;
   final double jumpInRate;
@@ -318,6 +324,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         rooms: 0,
                         sessions: <GameSession>[],
                         events: <Event>[],
+                        benefits: <Benefit>[],
+                        deductions: <Deduction>[],
                       ),
                     );
                   },
@@ -334,6 +342,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
                         rooms: _rooms,
                         sessions: _sessions,
                         events: _events,
+                        benefits: widget.initialBenefits,
+                        deductions: widget.initialDeductions,
                         startTime: _startTime,
                         endTime: _endTime,
                         profileId: _selectedProfileId,
