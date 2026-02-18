@@ -288,7 +288,11 @@ class _DayBreakdownCard extends StatelessWidget {
 }
 
 class _Line extends StatelessWidget {
-  const _Line({required this.label, required this.expression, this.isNegative = false});
+  const _Line({
+    required this.label,
+    required this.expression,
+    this.isNegative = false,
+  });
 
   final String label;
   final String expression;
@@ -463,7 +467,10 @@ class _DeductionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final totalDeductions = deductions.fold<double>(0, (sum, d) => sum + d.amount);
+    final totalDeductions = deductions.fold<double>(
+      0,
+      (sum, d) => sum + d.amount,
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
