@@ -144,10 +144,19 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
           events: entry.value.events,
           benefits: entry.value.benefits,
           deductions: entry.value.deductions,
+          startTime: entry.value.startTime,
+          endTime: entry.value.endTime,
           profileId: entry.value.profileId,
         );
       }
     });
+  }
+
+  String? _formatTimeOfDay(TimeOfDay? time) {
+    if (time == null) return null;
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 
   @override
@@ -526,6 +535,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       events: result.events,
       benefits: result.benefits,
       deductions: result.deductions,
+      startTime: _formatTimeOfDay(result.startTime),
+      endTime: _formatTimeOfDay(result.endTime),
       profileId: result.profileId,
     );
   }
@@ -538,15 +549,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     void persistSessions(List<GameSession> sessions) async {
       final current = _entriesByDayKey[key];
       final prevRooms = current?.rooms ?? 0;
-      final prevNormalSessionsCount = current?.sessions
-          .where((s) => s.type == SessionType.normal)
-          .length;
+      final prevSessionsCount = current?.sessions.length ?? 0;
       final userCustomizedRooms =
-          current != null && prevRooms != prevNormalSessionsCount;
-      final normalSessionsCount = sessions
-          .where((s) => s.type == SessionType.normal)
-          .length;
-      final nextRooms = userCustomizedRooms ? prevRooms : normalSessionsCount;
+        current != null && prevRooms != prevSessionsCount;
+      final sessionsCount = sessions.length;
+      final nextRooms = userCustomizedRooms ? prevRooms : sessionsCount;
       final nextHours = current?.hours ?? 0;
 
       final nextEntry = DayEntry(
@@ -581,6 +588,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         events: nextEntry.events,
         benefits: nextEntry.benefits,
         deductions: nextEntry.deductions,
+        startTime: _formatTimeOfDay(nextEntry.startTime),
+        endTime: _formatTimeOfDay(nextEntry.endTime),
         profileId: nextEntry.profileId,
       );
     }
@@ -642,6 +651,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         events: nextEntry.events,
         benefits: nextEntry.benefits,
         deductions: nextEntry.deductions,
+        startTime: _formatTimeOfDay(nextEntry.startTime),
+        endTime: _formatTimeOfDay(nextEntry.endTime),
         profileId: nextEntry.profileId,
       );
     }
@@ -703,6 +714,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         events: nextEntry.events,
         benefits: nextEntry.benefits,
         deductions: nextEntry.deductions,
+        startTime: _formatTimeOfDay(nextEntry.startTime),
+        endTime: _formatTimeOfDay(nextEntry.endTime),
         profileId: nextEntry.profileId,
       );
     }
@@ -764,6 +777,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         events: nextEntry.events,
         benefits: nextEntry.benefits,
         deductions: nextEntry.deductions,
+        startTime: _formatTimeOfDay(nextEntry.startTime),
+        endTime: _formatTimeOfDay(nextEntry.endTime),
         profileId: nextEntry.profileId,
       );
     }

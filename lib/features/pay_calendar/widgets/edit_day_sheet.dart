@@ -178,9 +178,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final normalSessionsCount = _sessions
-        .where((s) => s.type == SessionType.normal)
-        .length;
+    final sessionsCount = _sessions.length;
     final jumpInCount = _sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
@@ -206,8 +204,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
         (_rooms * perRoomBonus) +
         (jumpInCount * jumpInRate) +
         (_events.length * eventFine);
-    final roomsMismatch =
-        normalSessionsCount > 0 && _rooms != normalSessionsCount;
+    final roomsMismatch = sessionsCount > 0 && _rooms != sessionsCount;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -295,8 +292,8 @@ class _EditDaySheetState extends State<EditDaySheet> {
             const SizedBox(height: 18),
             StepperRow(
               title: l10n.roomsHostedTitle,
-              subtitle: normalSessionsCount > 0
-                  ? l10n.roomsHostedSubtitleWithSessions(normalSessionsCount)
+              subtitle: sessionsCount > 0
+                ? l10n.roomsHostedSubtitleWithSessions(sessionsCount)
                   : l10n.roomsHostedSubtitleNone,
               valueText: '$_rooms',
               onMinus: () {
@@ -310,7 +307,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
             ),
             if (roomsMismatch) ...<Widget>[
               const SizedBox(height: 8),
-              _MismatchHint(rooms: _rooms, sessions: normalSessionsCount),
+              _MismatchHint(rooms: _rooms, sessions: sessionsCount),
             ],
             const SizedBox(height: 18),
             Row(

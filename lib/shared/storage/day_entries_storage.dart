@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:hive/hive.dart';
 
 import '../../features/pay_calendar/models/event.dart';
@@ -13,6 +14,8 @@ class StoredDayEntry {
     required this.events,
     required this.benefits,
     required this.deductions,
+    this.startTime,
+    this.endTime,
     this.profileId,
   });
 
@@ -22,6 +25,8 @@ class StoredDayEntry {
   final List<Event> events;
   final List<Benefit> benefits;
   final List<Deduction> deductions;
+  final TimeOfDay? startTime;
+  final TimeOfDay? endTime;
   final String? profileId;
 }
 
@@ -54,6 +59,8 @@ class DayEntriesStorage {
       final events = _parseEvents(v['events']);
       final benefits = _parseBenefits(v['benefits']);
       final deductions = _parseDeductions(v['deductions']);
+      final startTime = _parseTime(v['startTime']);
+      final endTime = _parseTime(v['endTime']);
       final profileId = v['profileId'] as String?;
       if (hours <= 0 &&
           rooms <= 0 &&
@@ -71,6 +78,8 @@ class DayEntriesStorage {
         events: events,
         benefits: benefits,
         deductions: deductions,
+        startTime: startTime,
+        endTime: endTime,
         profileId: profileId,
       );
     }
@@ -149,6 +158,17 @@ class DayEntriesStorage {
       if (d != null) deductions.add(d);
     }
     return deductions;
+  }
+
+  TimeOfDay? _parseTime(dynamic raw) {
+    if (raw is! String) return null;
+    final parts = raw.split(':');
+    if (parts.length != 2) return null;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (h == null || m == null) return null;
+    if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+    return TimeOfDay(hour: h, minute: m);
   }
 
   /// Check if any day entries use a specific profile ID
