@@ -293,7 +293,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
             StepperRow(
               title: l10n.roomsHostedTitle,
               subtitle: sessionsCount > 0
-                ? l10n.roomsHostedSubtitleWithSessions(sessionsCount)
+                  ? l10n.roomsHostedSubtitleWithSessions(sessionsCount)
                   : l10n.roomsHostedSubtitleNone,
               valueText: '$_rooms',
               onMinus: () {

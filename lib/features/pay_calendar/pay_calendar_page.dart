@@ -551,7 +551,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       final prevRooms = current?.rooms ?? 0;
       final prevSessionsCount = current?.sessions.length ?? 0;
       final userCustomizedRooms =
-        current != null && prevRooms != prevSessionsCount;
+          current != null && prevRooms != prevSessionsCount;
       final sessionsCount = sessions.length;
       final nextRooms = userCustomizedRooms ? prevRooms : sessionsCount;
       final nextHours = current?.hours ?? 0;
