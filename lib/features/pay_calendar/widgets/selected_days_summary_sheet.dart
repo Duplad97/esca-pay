@@ -104,12 +104,16 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                 final day = dateOnly(days[index]);
                 final entry = entryForDay(day);
                 final hours = entry?.hours ?? 0;
-                final rooms = entry?.rooms ?? 0;
                 final rates = entry != null ? ratesForEntry(entry) : null;
                 final hourlyWage = rates?.hourlyWage ?? 0;
                 final perRoomBonus = rates?.perRoomBonus ?? 0;
                 final jumpInRate = rates?.jumpInRate ?? 0;
                 final eventFine = rates?.eventFine ?? 0;
+                final normalSessionsCount =
+                    entry?.sessions
+                        .where((s) => s.type == SessionType.normal)
+                        .length ??
+                    0;
                 final jumpInCount =
                     entry?.sessions
                         .where((s) => s.type == SessionType.jumpIn)
@@ -118,7 +122,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                 final eventCount = entry?.events.length ?? 0;
 
                 final hoursPay = hours * hourlyWage;
-                final roomsPay = rooms * perRoomBonus;
+                final roomsPay = normalSessionsCount * perRoomBonus;
                 final jumpInPay = jumpInCount * jumpInRate;
                 final eventsBonus = eventCount * eventFine;
                 final total = hoursPay + roomsPay + jumpInPay + eventsBonus;
@@ -128,7 +132,7 @@ class SelectedDaysSummarySheet extends StatelessWidget {
                   hours: hours,
                   hourlyWage: hourlyWage,
                   hoursPay: hoursPay,
-                  rooms: rooms,
+                  rooms: normalSessionsCount,
                   perRoomBonus: perRoomBonus,
                   roomsPay: roomsPay,
                   total: total,

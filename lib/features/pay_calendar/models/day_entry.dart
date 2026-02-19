@@ -57,6 +57,9 @@ class DayEntry {
     required double jumpInRate,
     required double eventFine,
   }) {
+    final normalSessionsCount = sessions
+        .where((s) => s.type == SessionType.normal)
+        .length;
     final jumpInCount = sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
@@ -69,7 +72,7 @@ class DayEntry {
       (sum, deduction) => sum + deduction.amount,
     );
     return (hours * hourlyWage) +
-        (rooms * perRoomBonus) +
+        (normalSessionsCount * perRoomBonus) +
         (jumpInCount * jumpInRate) +
         (events.length * eventFine) +
         benefitsTotal -

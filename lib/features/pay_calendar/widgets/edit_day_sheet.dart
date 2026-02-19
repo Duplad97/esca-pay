@@ -179,6 +179,9 @@ class _EditDaySheetState extends State<EditDaySheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final sessionsCount = _sessions.length;
+    final normalSessionsCount = _sessions
+        .where((s) => s.type == SessionType.normal)
+        .length;
     final jumpInCount = _sessions
         .where((s) => s.type == SessionType.jumpIn)
         .length;
@@ -201,7 +204,7 @@ class _EditDaySheetState extends State<EditDaySheet> {
 
     final earnings =
         (_hours * hourlyWage) +
-        (_rooms * perRoomBonus) +
+        (normalSessionsCount * perRoomBonus) +
         (jumpInCount * jumpInRate) +
         (_events.length * eventFine);
     final roomsMismatch = sessionsCount > 0 && _rooms != sessionsCount;
