@@ -36,11 +36,6 @@ class SelectedDaysSummarySheet extends StatelessWidget {
         allBenefits.addAll(entry.benefits);
       }
     }
-    final totalBenefits = allBenefits.fold<double>(
-      0,
-      (sum, b) => sum + b.amount,
-    );
-
     // Collect all deductions from all selected days
     final allDeductions = <Deduction>[];
     for (final day in days) {
@@ -63,7 +58,6 @@ class SelectedDaysSummarySheet extends StatelessWidget {
         );
       }
     }
-    totalWage += totalBenefits;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),

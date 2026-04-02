@@ -21,7 +21,7 @@ String weekRangeLabelL10n(
   int weekStartWeekday,
 ) {
   final start = startOfWeekWith(anyDayInWeek, weekStartWeekday);
-  final end = start.add(const Duration(days: 6));
+  final end = addCalendarDays(start, 6);
 
   final l = MaterialLocalizations.of(context);
   final startText = l.formatShortMonthDay(start);

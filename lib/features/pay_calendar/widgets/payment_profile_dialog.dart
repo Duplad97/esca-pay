@@ -56,7 +56,7 @@ class _PaymentProfileDialogState extends State<PaymentProfileDialog> {
 
     final inputTheme = Theme.of(context).inputDecorationTheme.copyWith(
       filled: true,
-      fillColor: cs.surfaceVariant.withValues(alpha: 0.6),
+      fillColor: cs.surfaceContainerHighest.withValues(alpha: 0.6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(color: cs.outlineVariant),
@@ -95,7 +95,7 @@ class _PaymentProfileDialogState extends State<PaymentProfileDialog> {
                 const SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
-                    color: cs.surfaceVariant.withValues(alpha: 0.6),
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: cs.outlineVariant),
                   ),

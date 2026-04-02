@@ -1,5 +1,10 @@
 DateTime dateOnly(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
+DateTime addCalendarDays(DateTime day, int days) {
+  final d = dateOnly(day);
+  return DateTime(d.year, d.month, d.day + days);
+}
+
 String shortWeekday(DateTime dt) {
   const names = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return names[dt.weekday - 1];
@@ -34,7 +39,7 @@ String weekRangeLabel(DateTime anyDayInWeek) {
 
 String weekRangeLabelWith(DateTime anyDayInWeek, int weekStartWeekday) {
   final start = startOfWeekWith(anyDayInWeek, weekStartWeekday);
-  final end = start.add(const Duration(days: 6));
+  final end = addCalendarDays(start, 6);
   final startText = '${shortMonthName(start)} ${start.day}';
   final endText = '${shortMonthName(end)} ${end.day}';
 
@@ -62,13 +67,12 @@ DateTime startOfWeekWith(DateTime day, int weekStartWeekday) {
   final d = dateOnly(day);
   final start = weekStartWeekday.clamp(DateTime.monday, DateTime.sunday);
   final delta = (d.weekday - start + 7) % 7;
-  return d.subtract(Duration(days: delta));
+  return addCalendarDays(d, -delta);
 }
 
 int daysInMonth(DateTime month) {
   final first = DateTime(month.year, month.month, 1);
-  final next = DateTime(first.year, first.month + 1, 1);
-  return next.subtract(const Duration(days: 1)).day;
+  return DateTime(first.year, first.month + 1, 0).day;
 }
 
 String monthTitle(DateTime month) {

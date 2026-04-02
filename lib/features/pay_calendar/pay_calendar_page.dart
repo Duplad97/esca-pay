@@ -233,11 +233,11 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                             child: SummaryRow(
                               weekLabel: weekRangeLabelL10n(
                                 context,
-                                _selectedDay,
+                                _weekSummaryAnchorDay(),
                                 _weekStartWeekday,
                               ),
                               weekTotal: _earningsForWeekContaining(
-                                _selectedDay,
+                                _weekSummaryAnchorDay(),
                               ),
                               monthLabel: monthTitleL10n(
                                 context,
@@ -451,9 +451,18 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     final start = startOfWeekWith(day, _weekStartWeekday);
     double total = 0;
     for (var i = 0; i < 7; i++) {
-      total += _earningsForDay(start.add(Duration(days: i)));
+      total += _earningsForDay(addCalendarDays(start, i));
     }
     return total;
+  }
+
+  DateTime _weekSummaryAnchorDay() {
+    final selected = dateOnly(_selectedDay);
+    if (selected.year == _visibleMonth.year &&
+        selected.month == _visibleMonth.month) {
+      return selected;
+    }
+    return DateTime(_visibleMonth.year, _visibleMonth.month, 1);
   }
 
   double _earningsForMonth(DateTime month) {
@@ -461,7 +470,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     final count = daysInMonth(first);
     double total = 0;
     for (var i = 0; i < count; i++) {
-      total += _earningsForDay(first.add(Duration(days: i)));
+      total += _earningsForDay(addCalendarDays(first, i));
     }
     return total;
   }
@@ -565,7 +574,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
-        profileId: current?.profileId,
+        profileId: current?.profileId ?? _defaultProfileId,
       );
 
       if (!mounted) return;
@@ -628,7 +637,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
-        profileId: current?.profileId,
+        profileId: current?.profileId ?? _defaultProfileId,
       );
 
       if (!mounted) return;
@@ -691,7 +700,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         deductions: current?.deductions ?? const [],
         startTime: current?.startTime,
         endTime: current?.endTime,
-        profileId: current?.profileId,
+        profileId: current?.profileId ?? _defaultProfileId,
       );
 
       if (!mounted) return;
@@ -754,7 +763,7 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
         deductions: deductions,
         startTime: current?.startTime,
         endTime: current?.endTime,
-        profileId: current?.profileId,
+        profileId: current?.profileId ?? _defaultProfileId,
       );
 
       if (!mounted) return;
