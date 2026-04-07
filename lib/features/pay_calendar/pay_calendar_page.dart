@@ -16,6 +16,7 @@ import 'models/benefit.dart';
 import 'models/deduction.dart';
 import 'models/payment_profile.dart';
 import 'models/rates.dart';
+import 'models/room_constants.dart';
 import 'widgets/calendar_grid.dart';
 import 'widgets/edit_day_sheet.dart';
 import 'widgets/edit_events_sheet.dart';
@@ -26,6 +27,7 @@ import 'widgets/rates_sheet.dart';
 import 'widgets/selected_day_header.dart';
 import 'widgets/selected_days_summary_sheet.dart';
 import 'widgets/summary_card.dart';
+import 'widgets/monthly_managed_rooms_sheet.dart';
 import 'widgets/top_bar.dart';
 import 'widgets/weekly_summary_checkbox.dart';
 
@@ -187,6 +189,8 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
                   );
                 }),
                 onRates: () => _openRatesSheet(context),
+                onMonthlyRoomsSummary: () =>
+                    _openMonthlyManagedRoomsSummary(context),
                 onTheme: () {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
@@ -397,6 +401,25 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
     );
   }
 
+  Future<void> _openMonthlyManagedRoomsSummary(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return MonthlyManagedRoomsSheet(
+          initialMonth: _visibleMonth,
+          roomCountsForMonth: _managedRoomCountsForMonth,
+        );
+      },
+    );
+  }
+
   void _selectDay(DateTime day) {
     setState(() {
       _setSelectedDayInState(day);
@@ -473,6 +496,29 @@ class _PayCalendarPageState extends State<PayCalendarPage> {
       total += _earningsForDay(addCalendarDays(first, i));
     }
     return total;
+  }
+
+  List<MapEntry<String, int>> _managedRoomCountsForMonth(DateTime month) {
+    final first = DateTime(month.year, month.month, 1);
+    final count = daysInMonth(first);
+    final canonicalNamesByLower = <String, String>{
+      for (final name in roomNames) name.toLowerCase(): name,
+    };
+    final counts = <String, int>{for (final name in roomNames) name: 0};
+
+    for (var i = 0; i < count; i++) {
+      final day = addCalendarDays(first, i);
+      final sessions = _entryForDay(day)?.sessions ?? const <GameSession>[];
+      for (final session in sessions) {
+        final normalized = session.roomName.trim().toLowerCase();
+        final canonical = canonicalNamesByLower[normalized];
+        if (canonical == null) continue;
+        counts.update(canonical, (value) => value + 1);
+      }
+    }
+
+    final entries = counts.entries.toList(growable: false);
+    return entries;
   }
 
   Future<void> _openEditSheet(

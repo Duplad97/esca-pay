@@ -19,7 +19,7 @@ final List<String> roomNames = List<String>.unmodifiable(
     'A boszorkány',
     'Mesterséges Intelligencia',
     'A gyűrű',
-    'JumpRare',
+    'JumpRace',
     'Quizy!',
   ]..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase())),
 );

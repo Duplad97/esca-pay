@@ -15,6 +15,7 @@ class TopBar extends StatelessWidget {
     required this.onPrevMonth,
     required this.onNextMonth,
     required this.onRates,
+    required this.onMonthlyRoomsSummary,
     required this.onTheme,
     this.onMonthTap,
   });
@@ -23,6 +24,7 @@ class TopBar extends StatelessWidget {
   final VoidCallback onPrevMonth;
   final VoidCallback onNextMonth;
   final VoidCallback onRates;
+  final VoidCallback onMonthlyRoomsSummary;
   final VoidCallback onTheme;
   final VoidCallback? onMonthTap;
 
@@ -61,6 +63,15 @@ class TopBar extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  IconButton.filledTonal(
+                    tooltip: '${l10n.monthly} ${l10n.rooms}',
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      onMonthlyRoomsSummary();
+                    },
+                    icon: const Icon(Icons.meeting_room_outlined),
+                  ),
+                  const SizedBox(width: 8),
                   IconButton.filledTonal(
                     tooltip: l10n.themesTooltip,
                     onPressed: () {
